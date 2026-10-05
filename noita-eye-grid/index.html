@@ -1,0 +1,385 @@
+<title>Eye Message Grid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: control strip on top, one wide monospace ledger (sticky row names) scrolling sideways, legend + hover readout under it */
+:root{
+  --bg:#f3f4f1; --panel:#ffffff; --fg:#1d2321; --muted:#6c7671; --rule:#d9ddd8;
+  --agree-1:#d7ece4; --agree-2:#a9d8c6; --agree-3:#6cbfa2; --agree-ink:#0f3b2e;
+  --slot:#ffd98a; --slot-ink:#5a3b00; --slot-edge:#c98a00;
+  --label:#e3dcf5; --label-ink:#3b2a6e;
+  --hot:#d6246e; --hot-bg:#ffe0ec; --pin:#ffffff; --pin-bg:#2b59c3; --pR1:#d9480f; --pP0:#0b7285; --pP1:#7048e8; --pP2:#2f9e44; --pQ:#c2255c;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
+  --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
+  --slot:#5a4410; --slot-ink:#ffe7b0; --slot-edge:#d9a21f;
+  --label:#30264f; --label-ink:#e2d8ff;
+  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
+  --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
+  --slot:#5a4410; --slot-ink:#ffe7b0; --slot-edge:#d9a21f;
+  --label:#30264f; --label-ink:#e2d8ff;
+  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px}
+.wrap{padding-inline:16px;padding-block:18px 28px;display:grid;gap:14px;max-width:100%}
+h1{font-size:18px;font-weight:600;margin:0;letter-spacing:.01em}
+.sub{color:var(--muted);font-size:13px;margin:2px 0 0}
+details.about{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:13px;line-height:1.5}
+details.about summary{cursor:pointer;font-weight:600}
+details.about h2{font-size:13px;margin:10px 0 2px}
+details.about ul{margin:2px 0 4px;padding-left:18px}
+details.about p{margin:4px 0}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group>span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+button,select,input[type=text]{font:inherit;font-size:13px;color:var(--fg);background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:5px 9px}
+button{cursor:pointer}
+button[aria-pressed="true"]{border-color:var(--fg);font-weight:600}
+input[type=text]{font-family:var(--mono);width:min(340px,80vw)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+label.chk{display:flex;gap:5px;align-items:center;font-size:13px}
+.ledger{background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow-x:auto;min-width:0}
+table{border-collapse:collapse;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;line-height:1}
+th,td{padding:0;white-space:nowrap}
+th.name{position:sticky;left:0;z-index:2;background:var(--panel);text-align:left;font-weight:600;padding:5px 10px 5px 10px;border-right:1px solid var(--rule)}
+th.name small{color:var(--muted);font-weight:400}
+th.name.drag{cursor:grab;user-select:none;touch-action:none}
+th.name.drag .grip{color:var(--muted);margin-right:6px;letter-spacing:-2px}
+tr.dragging th,tr.dragging td{opacity:.45}
+tr.drop-above>*{box-shadow:inset 0 3px 0 var(--hot)}
+tr.drop-below>*{box-shadow:inset 0 -3px 0 var(--hot)}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important}
+tr.ruler td{color:var(--muted);font-size:10px;height:18px;vertical-align:bottom;text-align:left}
+tr.sep td,tr.sep th{height:8px;background:var(--bg)}
+td.c{padding:5px 0;text-align:center;width:3ch;min-width:3ch;cursor:pointer;position:relative}
+td.c::after{content:"|";position:absolute;right:-.28ch;color:var(--rule);pointer-events:none}
+td.c:last-child::after{content:""}
+td.a1{background:var(--agree-1);color:var(--agree-ink)}
+td.a2{background:var(--agree-2);color:var(--agree-ink)}
+td.a3{background:var(--agree-3);color:var(--agree-ink);font-weight:600}
+td.slot{background:var(--slot);color:var(--slot-ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--slot-edge)}
+td.lab{background:var(--label);color:var(--label-ink);font-weight:700}
+td.c.rp{background:hsl(var(--h) 85% 80%)!important;color:#161616!important;font-weight:700}
+td.c.twin{outline:2px solid var(--hot);outline-offset:-2px}
+td.c.grp{outline:2px solid var(--fg);outline-offset:-2px}
+#grid.focus td.c:not(.grp):not(.twin):not(.self){opacity:.22}
+td.c .rt{position:absolute;top:1px;left:1px;font-size:8px;line-height:1;font-weight:700;opacity:.85}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) td.c.rp{background:hsl(var(--h) 55% 33%)!important;color:#fff!important}}
+:root[data-theme="dark"] td.c.rp{background:hsl(var(--h) 55% 33%)!important;color:#fff!important}
+td.hot{background:var(--hot-bg)!important;color:var(--hot)!important;font-weight:700;outline:2px solid var(--hot);outline-offset:-2px}
+td.pin{background:var(--pin-bg)!important;color:var(--pin)!important;font-weight:700;box-shadow:none}
+td.pin.hot{outline:2px solid var(--hot);outline-offset:-2px}
+td.c.ps-R1{box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)}
+td.c.ps-F3{box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)}
+td.c.ps-X{box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)}
+td.c.ps-Q{box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)}
+td.c.ps-weak{box-shadow:inset 0 -2px 0 var(--muted)}
+td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:var(--muted);align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:22px;height:14px;border-radius:3px;border:1px solid var(--rule)}
+.readout{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:9px 12px;min-height:20px;overflow-wrap:anywhere}
+.slots{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.slots b{color:var(--fg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Eye message grid</h1>
+    <p class="sub">All 9 messages, every value 00–82 including labels and slots. Hover a value to light up every copy of it. Click a cell to pin or unpin that one cell. Drag a message name to reorder rows.</p>
+  </header>
+
+  <details class="about">
+    <summary>Working assumptions, and why shifted repeat patterns mean shared plaintext</summary>
+    <h2>Treated as settled</h2>
+    <ul>
+      <li><b>Values.</b> Read each triangle of 3 eyes as a base-5 number. Exactly one eye numbering and reading order gives every value 0–82 with no gaps.</li>
+      <li><b>One cipher and one key for all 9 messages.</b> All 9 share their opening values, and long shared stretches line up at the same positions.</li>
+    </ul>
+    <h2>Best-fit cipher model: a stateful "deck" cipher (group autokey on 83 symbols)</h2>
+    <ul>
+      <li>An 83-card deck. Each plaintext letter outputs one card and rearranges the deck by a rule that depends only on positions in the deck, never on which card is where. The deck state carries forward from letter to letter.</li>
+      <li>Fits all of these:
+        <ul>
+          <li>flat value frequencies;</li>
+          <li>no value ever follows itself (0 in about 1000);</li>
+          <li>shifted copies of passages;</li>
+          <li>the relabelling between copies doesn't commute, which rules out simple substitution, Vigenère and other periodic ciphers, progressive and autokey ciphers, and plain or flipping cipher wheels.</li>
+        </ul>
+      </li>
+      <li>Excluded by our own exact test: an affine "multiply-and-shift" state (the AGL(1,83) group). No consistent fit to the copy pairs.</li>
+      <li>Labels (column 0) and the yellow slots don't move the deck. Shared text locks back exactly after them every time.</li>
+    </ul>
+    <h2>Why matching repeat spacing means the same plaintext</h2>
+    <ul>
+      <li>The deck rule only moves positions. So the same run of plaintext, started from two different deck states, gives two outputs that are one fixed relabelling of each other. Wherever one copy repeats a value, the other copy repeats a value with the same spacing, but the values differ (the coloured letters A, B, C… in the grid). Different plaintext gives unrelated repeat patterns.</li>
+      <li>A chance match is very unlikely. We compared each message against a reversed and rotated partner, which keeps value frequencies but has no real copies. Across 174,000 such alignments, none had 3 or more matched repeat pairs, with zero mismatches, inside a 40-value window.
+        <ul>
+          <li>Links with 3 or more pairs are therefore treated as real.</li>
+          <li>2-pair links count only when three messages agree on consistent offsets (the family-2 passage).</li>
+        </ul>
+      </li>
+      <li>This says the plaintext is the same. It says nothing about what that plaintext is.</li>
+    </ul>
+  </details>
+
+  <div class="controls">
+    <div class="group" id="orders"><span>Row order</span></div>
+    <div class="group"><span>Custom</span><input type="text" id="custom" value="E1 W1 E2 W2 W3 E3 E4 W4 E5" aria-label="Custom row order"><button id="apply">Apply</button></div>
+    <div class="group"><span>Colour by</span>
+      <select id="mode" aria-label="Colour mode">
+        <option value="any">Same value in same column (any row)</option>
+        <option value="above">Same as the row above</option>
+        <option value="none">No agreement colour</option>
+      </select>
+    </div>
+    <label class="chk"><input type="checkbox" id="showSlots" checked> slots</label>
+    <label class="chk"><input type="checkbox" id="showLab" checked> labels (col 0)</label>
+    <label class="chk"><input type="checkbox" id="showPas" checked> shared passages</label>
+    <label class="chk"><input type="checkbox" id="showRep" checked> repeat pattern</label>
+  </div>
+
+  <div class="ledger"><table id="grid"></table></div>
+
+  <div class="legend">
+    <span class="chip"><i class="sw" style="background:var(--agree-1)"></i>shared by 2</span>
+    <span class="chip"><i class="sw" style="background:var(--agree-2)"></i>3–5</span>
+    <span class="chip"><i class="sw" style="background:var(--agree-3)"></i>6–9</span>
+    <span class="chip"><i class="sw" style="background:var(--slot);box-shadow:inset 0 -3px 0 var(--slot-edge)"></i>slot (differs, then the pair re-syncs)</span>
+    <span class="chip"><i class="sw" style="background:var(--label)"></i>label</span>
+    <span class="chip"><i class="sw" style="background:var(--hot-bg);outline:2px solid var(--hot);outline-offset:-2px"></i>hovered value</span>
+    <span class="chip"><i class="sw" style="background:var(--pin-bg)"></i>pinned cell</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>refrain copies (E1/W1/E2 + E3)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)"></i>shifted copies E4/W4/E5</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)"></i>E4 passage in E3/W2 (cross-family; 0 of 174k null alignments reach 3 pairs)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)"></i>family-2 passage W2/E3/W3 (2 pairs each, 3-way consistent)</span>
+    <span class="chip"><i class="sw" style="background:hsl(200 85% 80%)"></i>repeat that recurs in every copy of a passage (same colour + letter in each copy). Hover one: its whole set lights up, the rest dims</span>
+    <span class="chip"><i class="sw" style="outline:2px solid var(--hot);outline-offset:-2px"></i>on hover: the same plaintext position in the other copies</span>
+    <button id="clearPins">Clear pins</button>
+  </div>
+
+  <div class="readout" id="readout">Hover any value.</div>
+  <div class="readout" id="pinlist">No pinned cells.</div>
+  <div class="slots" id="slotlist"></div>
+</div>
+
+<script>
+const MSG = {
+E1:[50,66,5,48,62,13,75,29,24,61,42,70,66,62,32,14,81,8,15,78,2,29,13,49,1,80,82,40,63,81,21,19,0,40,51,65,26,14,21,70,47,44,48,42,19,48,13,47,19,49,72,31,5,24,3,43,59,67,33,49,41,60,21,26,30,5,25,20,71,11,74,56,4,74,19,71,4,51,41,43,80,72,54,63,79,81,15,16,44,31,30,12,33,57,28,13,64,43,48],
+W1:[80,66,5,48,62,13,75,29,24,61,42,70,66,62,32,14,81,8,15,78,2,29,13,49,1,29,11,30,52,81,21,19,0,25,26,54,20,14,21,70,47,44,48,42,19,48,13,47,19,49,44,26,59,77,64,43,79,28,72,64,1,30,73,23,67,6,33,25,64,81,68,46,17,36,13,17,21,68,13,9,46,67,57,34,62,82,15,10,73,62,2,11,65,72,37,44,10,43,68,62,9,34,18],
+E2:[36,66,5,48,62,13,75,29,24,61,42,70,66,62,32,14,81,8,15,78,2,29,13,49,1,69,76,52,9,48,66,80,22,64,57,40,49,78,3,16,56,19,47,40,80,6,13,64,29,49,64,63,6,49,31,13,16,10,45,24,26,77,10,60,81,61,34,54,70,21,15,4,66,77,42,37,30,22,0,11,41,72,57,20,23,57,65,41,23,18,72,42,5,3,26,78,8,5,54,45,77,25,64,61,16,44,54,51,20,63,25,11,26,45,53,60,38,34],
+W2:[76,66,5,49,75,54,69,46,32,1,42,60,26,48,50,80,32,24,55,61,47,12,21,12,49,54,34,25,36,15,56,55,20,9,8,62,13,82,9,44,29,60,53,82,42,80,5,43,71,3,80,77,47,78,34,25,62,18,10,49,62,64,52,81,11,66,62,13,47,17,52,70,26,23,32,31,64,23,35,32,50,6,1,25,8,37,47,43,26,76,65,68,80,17,7,45,63,14,53,63,60,16],
+E3:[63,66,5,49,75,54,2,60,29,40,78,47,60,75,67,71,60,2,65,7,47,14,45,74,59,41,80,13,60,13,81,22,35,50,40,39,2,59,48,31,76,2,80,75,1,56,67,11,21,8,40,65,45,75,55,39,60,42,13,3,22,57,2,6,58,9,70,1,58,56,63,68,25,79,7,20,19,64,2,66,73,30,71,16,12,30,65,37,20,13,22,63,18,46,64,59,41,81,82,22,78,36,47,17,4,6,17,5,36,79,63,1,64,69,15,43,4,58,56,31,14,64,58,18,44,78,69,1,0,46,20,71,73,25,35,8,24],
+W3:[34,66,5,49,75,54,23,74,11,13,28,26,19,48,67,57,37,60,34,28,74,10,17,32,11,18,19,43,19,81,42,4,62,9,46,49,32,51,76,58,4,43,47,17,67,79,21,32,44,16,30,37,26,28,41,68,57,34,51,10,69,70,8,6,46,43,18,39,47,43,15,13,33,30,35,62,37,0,37,5,38,55,37,13,40,25,9,21,11,64,5,79,42,68,11,71,11,48,3,67,61,40,22,14,35,50,61,39,11,2,66,49,51,53,17,73,36,75,74,54,24,30,54,70],
+E4:[27,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,77,44,38,1,18,28,76,4,34,60,63,58,80,17,54,79,75,48,54,55,19,62,64,14,47,51,70,75,5,11,47,45,58,68,69,79,25,38,45,73,47,68,50,34,45,78,26,79,57,4,56,22,60,18,75,43,60,59,67,63,42,49,33,40,65,79,77,7,3,26,62,31,78,26,57,69,40,4,23,26,13,67,42,38,72,11,39,65,60,25,6,80,66,68,77,59,78,19],
+W4:[77,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,60,21,80,1,72,55,16,82,35,57,19,1,66,18,27,39,17,74,81,39,14,78,0,25,65,43,66,64,38,81,23,24,50,57,30,71,75,26,68,54,57,56,50,71,73,14,21,8,32,26,63,5,37,19,43,66,47,53,34,66,23,73,31,54,38,77,67,11,63,79,6,22,21,51,69,74,21,5,17,67,37,29,21,60,14,82,44,30,4,20,42,35,1,31,54,46,20,40,30],
+E5:[33,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,33,21,59,44,18,28,76,59,34,60,63,79,27,12,54,5,49,48,54,55,52,62,72,69,10,57,22,58,48,67,53,7,34,32,30,31,19,26,8,34,46,7,30,71,55,34,75,54,9,6,60,5,23,25,45,42,80,25,12,22,76,20,51,62,21,40,9,41,10,44,73,8,33,70,73,6,31,21,72,5,40,61,51,42,66,64,74,61,25,63,42,24,41]
+};
+const NAMES = Object.keys(MSG);
+const PASS = [["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 29, 48, "E2", 34, 53, 6], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "W1", 55, 77, "E3", 86, 108, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["X", "E4", 85, 100, "W2", 51, 66, 3], ["X", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
+const PASSAT = {}; NAMES.forEach(n => PASSAT[n] = {});
+PASS.forEach(([k, a, a0, a1, b, b0, b1, n]) => { for (let i = a0; i <= a1; i++) PASSAT[a][i] = PASSAT[a][i] && PASSAT[a][i] !== 'weak' ? PASSAT[a][i] : k; for (let i = b0; i <= b1; i++) PASSAT[b][i] = PASSAT[b][i] && PASSAT[b][i] !== 'weak' ? PASSAT[b][i] : k; });
+/* plaintext-position twins and repeat groups from the passage links */
+const K = (n, i) => n + ":" + i;
+function UF() { const p = new Map(); const f = x => { if (!p.has(x)) p.set(x, x); while (p.get(x) !== x) { p.set(x, p.get(p.get(x))); x = p.get(x); } return x; }; return { f, u: (a, b) => { const ra = f(a), rb = f(b); if (ra !== rb) p.set(ra, rb); } }; }
+const TW = UF(), RG = UF(), RPM = new Set();
+PASS.forEach(([k, a, a0, a1, b, b0, b1]) => {
+  const s = b0 - a0, A = MSG[a], B = MSG[b];
+  for (let i = a0; i <= a1 && i + s <= b1; i++) TW.u(K(a, i), K(b, i + s));
+  for (let j = a0; j <= a1 && j + s <= b1; j++) for (let i = a0; i < j; i++) {
+    const ea = A[i] === A[j], eb = B[i + s] === B[j + s];
+    if (ea && eb) { const c = [K(a, i), K(a, j), K(b, i + s), K(b, j + s)]; c.forEach(x => RPM.add(x)); c.slice(1).forEach(x => RG.u(c[0], x)); }
+  }
+});
+const TWINS = new Map();   // cell -> all cells with the same plaintext position
+NAMES.forEach(n => MSG[n].forEach((_, i) => { const r = TW.f(K(n, i)); if (!TWINS.has(r)) TWINS.set(r, []); TWINS.get(r).push(K(n, i)); }));
+const GROUPS = new Map(); RPM.forEach(x => { const r = RG.f(x); if (!GROUPS.has(r)) GROUPS.set(r, []); GROUPS.get(r).push(x); });
+const RTAG = new Map(); { const roots = []; RPM.forEach(x => { const r = RG.f(x); if (!roots.includes(r)) roots.push(r); });
+  roots.sort((x, y) => { const [nx, ix] = x.split(":"), [ny, iy] = y.split(":"); return NAMES.indexOf(nx) - NAMES.indexOf(ny) || ix - iy; });
+  const L = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  roots.forEach((r, q) => RTAG.set(r, { tag: L[q % L.length], h: Math.round((q * 137.508) % 360) })); }
+const PRESETS = {
+  "Message order": "E1 W1 E2 W2 E3 W3 E4 W4 E5",
+  "Families": "E1 W1 E2 W2 W3 E3 E4 W4 E5",
+  "E / W split": "E1 E2 E3 E4 E5 W1 W2 W3 W4"
+};
+const MAXLEN = Math.max(...NAMES.map(n => MSG[n].length));
+const p2 = v => String(v).padStart(2, "0");
+
+/* Slots: for every pair, a run of differing values that starts right after a shared value
+   and is closed by a shared run of >= 2 (a lone coincidental match stays inside the slot). */
+function pairSlots(A, B, flank = 2) {
+  const n = Math.min(A.length, B.length), eq = i => A[i] === B[i], out = [];
+  let i = 1;
+  while (i < n) {
+    if (!eq(i) && eq(i - 1)) {
+      let j = i, k = i, closed = false;
+      while (j < n) {
+        while (j < n && !eq(j)) j++;
+        k = j; while (k < n && eq(k)) k++;
+        if (j >= n) break;
+        if (k - j >= flank) { closed = true; break; }
+        j = k;
+      }
+      if (closed) out.push([i, j]);
+      i = closed ? k : n;
+    } else i++;
+  }
+  return out;
+}
+const SLOT = {}; NAMES.forEach(n => SLOT[n] = new Set());
+const slotLines = [];
+for (let a = 0; a < NAMES.length; a++) for (let b = a + 1; b < NAMES.length; b++) {
+  const A = NAMES[a], B = NAMES[b], s = pairSlots(MSG[A], MSG[B]);
+  if (!s.length) continue;
+  s.forEach(([x, y]) => { for (let i = x; i < y; i++) { SLOT[A].add(i); SLOT[B].add(i); } });
+  slotLines.push(`<b>${A}/${B}</b> ` + s.map(([x, y]) => `pos ${x}–${y - 1} (len ${y - x})`).join(" · "));
+}
+document.getElementById("slotlist").innerHTML = "Detected slots: " + slotLines.join("   |   ");
+
+let order = PRESETS["Families"].split(" ");
+const PINS = new Set();   // "E1:25"
+const grid = document.getElementById("grid");
+const opt = () => ({
+  mode: document.getElementById("mode").value,
+  slots: document.getElementById("showSlots").checked,
+  lab: document.getElementById("showLab").checked,
+  pas: document.getElementById("showPas").checked,
+  rep: document.getElementById("showRep").checked
+});
+
+function render() {
+  const o = opt();
+  let h = '<tr class="ruler"><th class="name"></th>';
+  for (let i = 0; i < MAXLEN; i++) h += `<td>${i % 5 === 0 ? i : ""}</td>`;
+  h += "</tr>";
+  order.forEach((n, r) => {
+    const m = MSG[n];
+    h += `<tr data-r="${r}"><th class="name drag" title="Drag to reorder"><span class="grip" aria-hidden="true">⋮⋮</span>${n} <small>(${String(m.length).padStart(3, "0")})</small></th>`;
+    for (let i = 0; i < MAXLEN; i++) {
+      if (i >= m.length) { h += "<td></td>"; continue; }
+      const v = m[i], cls = ["c"];
+      if (o.mode === "any") {
+        const k = order.filter(x => MSG[x][i] === v).length;
+        if (k >= 6) cls.push("a3"); else if (k >= 3) cls.push("a2"); else if (k === 2) cls.push("a1");
+      } else if (o.mode === "above" && r > 0) {
+        if (MSG[order[r - 1]][i] === v) cls.push("a2");
+      }
+      if (o.lab && i === 0) cls.push("lab");
+      if (o.slots && SLOT[n].has(i)) cls.push("slot");
+      if (o.pas && PASSAT[n][i]) cls.push("ps-" + PASSAT[n][i]);
+      let sty = "", tagh = "";
+      if (o.rep && RPM.has(K(n, i))) { const t = RTAG.get(RG.f(K(n, i))); cls.push("rp"); sty = ` style="--h:${t.h}"`; tagh = `<span class="rt">${t.tag}</span>`; }
+      if (PINS.has(`${n}:${i}`)) cls.push("pin");
+      h += `<td class="${cls.join(" ")}"${sty} data-v="${v}" data-i="${i}" data-n="${n}">${tagh}${p2(v)}</td>`;
+    }
+    h += "</tr>";
+  });
+  grid.innerHTML = h;
+  document.querySelectorAll("#orders button").forEach(b => b.setAttribute("aria-pressed", PRESETS[b.textContent] === order.join(" ")));
+  showPins();
+}
+
+const readout = document.getElementById("readout");
+function light(v, i) {
+  grid.querySelectorAll("td.hot,td.colhot,td.twin,td.grp,td.self").forEach(t => t.classList.remove("hot", "colhot", "twin", "grp", "self"));
+  grid.classList.remove("focus");
+  if (v === null) { readout.textContent = "Hover any value."; return; }
+  grid.querySelectorAll(`td[data-v="${v}"]`).forEach(t => t.classList.add("hot"));
+  if (i !== null) grid.querySelectorAll(`td[data-i="${i}"]`).forEach(t => t.classList.add("colhot"));
+  const where = NAMES.map(n => {
+    const ps = MSG[n].map((x, k) => x === v ? k : -1).filter(k => k >= 0);
+    return ps.length ? `${n}@${ps.join(",")}` : null;
+  }).filter(Boolean);
+  const total = NAMES.reduce((s, n) => s + MSG[n].filter(x => x === v).length, 0);
+  const b5 = `${Math.floor(v / 25)}${Math.floor(v / 5) % 5}${v % 5}`;
+  readout.textContent = `value ${p2(v)} (eyes ${b5})  ×${total}  →  ${where.join("  ")}`;
+}
+grid.addEventListener("mouseover", e => {
+  const t = e.target.closest("td.c"); if (!t) return;
+  light(+t.dataset.v, +t.dataset.i);
+  const key = K(t.dataset.n, +t.dataset.i), cell = x => { const [n, i] = x.split(":"); return grid.querySelector(`td[data-n="${n}"][data-i="${i}"]`); };
+  const tw = TWINS.get(TW.f(key)) || [];
+  const o = opt(), g = o.rep && RPM.has(key) ? GROUPS.get(RG.f(key)) : null;
+  if (tw.length > 1 || g) {
+    grid.querySelectorAll("td.hot,td.colhot").forEach(c => c.classList.remove("hot", "colhot"));
+    grid.classList.add("focus"); t.classList.add("self");
+    tw.forEach(x => { const c = cell(x); if (c && c !== t) c.classList.add("twin"); });
+    let msg = "";
+    if (g) {
+      g.forEach(x => { const c = cell(x); if (c) c.classList.add("grp"); });
+      const by = {}; g.forEach(x => { const [n, i] = x.split(":"); (by[n] = by[n] || []).push(+i); });
+      const tg = RTAG.get(RG.f(key)).tag;
+      msg = `repeat ${tg}: in every copy the same value appears at both positions (a different value per copy)  →  ` +
+        NAMES.filter(n => by[n]).map(n => `${n} ` + by[n].sort((a, b) => a - b).map(i => `${i}=${p2(MSG[n][i])}`).join(" ")).join("   |   ");
+    }
+    if (tw.length > 1) msg += (msg ? "      " : "") + "same plaintext position (red outline): " + tw.map(x => x.replace(":", "@")).join(" ");
+    readout.textContent = msg;
+  }
+});
+grid.addEventListener("mouseleave", () => light(null));
+grid.addEventListener("click", e => {
+  const t = e.target.closest("td.c"); if (!t) return;
+  const key = `${t.dataset.n}:${t.dataset.i}`;
+  if (PINS.has(key)) { PINS.delete(key); t.classList.remove("pin"); } else { PINS.add(key); t.classList.add("pin"); }
+  showPins();
+});
+function showPins() {
+  const el = document.getElementById("pinlist");
+  if (!PINS.size) { el.textContent = "No pinned cells."; return; }
+  const by = {};
+  [...PINS].forEach(k => { const [n, i] = k.split(":"); (by[n] = by[n] || []).push(+i); });
+  el.textContent = "Pinned: " + NAMES.filter(n => by[n]).map(n =>
+    `${n} ` + by[n].sort((a, b) => a - b).map(i => `${i}=${p2(MSG[n][i])}`).join(" ")).join("   |   ");
+}
+document.getElementById("clearPins").onclick = () => { PINS.clear(); render(); };
+
+const ob = document.getElementById("orders");
+Object.keys(PRESETS).forEach(k => {
+  const b = document.createElement("button"); b.textContent = k;
+  b.onclick = () => { order = PRESETS[k].split(" "); document.getElementById("custom").value = PRESETS[k]; render(); };
+  ob.appendChild(b);
+});
+document.getElementById("apply").onclick = () => {
+  const want = document.getElementById("custom").value.toUpperCase().split(/[\s,]+/).filter(x => MSG[x]);
+  if (want.length) { order = want; render(); }
+};
+document.getElementById("custom").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("apply").click(); });
+["mode", "showSlots", "showLab", "showPas", "showRep"].forEach(id => document.getElementById(id).addEventListener("change", render));
+/* drag rows by their name cell (pointer events: mouse, pen and touch) */
+let drag = null;
+grid.addEventListener("pointerdown", e => {
+  const th = e.target.closest("th.name.drag"); if (!th) return;
+  const tr = th.parentElement; e.preventDefault();
+  drag = { from: +tr.dataset.r, to: null, id: e.pointerId };
+  try { th.setPointerCapture(e.pointerId); } catch (_) {}
+  tr.classList.add("dragging"); document.body.classList.add("is-dragging");
+});
+grid.addEventListener("pointermove", e => {
+  if (!drag || e.pointerId !== drag.id) return;
+  grid.querySelectorAll("tr.drop-above,tr.drop-below").forEach(t => t.classList.remove("drop-above", "drop-below"));
+  const rows = [...grid.querySelectorAll("tr[data-r]")];
+  let to = rows.length;
+  for (const tr of rows) { const b = tr.getBoundingClientRect(); if (e.clientY < b.top + b.height / 2) { to = +tr.dataset.r; break; } }
+  drag.to = to;
+  if (to < rows.length) rows[to].classList.add("drop-above"); else rows[rows.length - 1].classList.add("drop-below");
+});
+function endDrag(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  const { from, to } = drag; drag = null;
+  document.body.classList.remove("is-dragging");
+  if (to !== null && to !== from && to !== from + 1) {
+    const [n] = order.splice(from, 1);
+    order.splice(to > from ? to - 1 : to, 0, n);
+    document.getElementById("custom").value = order.join(" ");
+  }
+  render();
+}
+grid.addEventListener("pointerup", endDrag);
+grid.addEventListener("pointercancel", endDrag);
+render();
+</script>
