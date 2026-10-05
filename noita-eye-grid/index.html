@@ -128,7 +128,7 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
       <li>The deck rule only moves positions. So the same run of plaintext, started from two different deck states, gives two outputs that are one fixed relabelling of each other. Wherever one copy repeats a value, the other copy repeats a value with the same spacing, but the values differ (the coloured letters A, B, C… in the grid). Different plaintext gives unrelated repeat patterns.</li>
       <li>A chance match is very unlikely. We compared each message against a reversed and rotated partner, which keeps value frequencies but has no real copies. Across 174,000 such alignments, none had 3 or more matched repeat pairs, with zero mismatches, inside a 40-value window.
         <ul>
-          <li>Links with 3 or more pairs are therefore treated as real.</li>
+          <li>Links with 3 or more pairs are therefore treated as real. A highlight runs only from a passage's first matched repeat to its last: a repeat proves the text between its two ends, nothing before or after.</li>
           <li>2-pair links count only when three messages agree on consistent offsets (passage B in W2/E3/W3).</li>
         </ul>
       </li>
@@ -210,6 +210,16 @@ E5:[33,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,33,21,59,44,18,28,7
 };
 const NAMES = Object.keys(MSG);
 const PASS = [["R1", "E1", 29, 49, "W1", 29, 49, 0], ["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 29, 48, "E2", 34, 53, 6], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["AL", "W1", 59, 77, "E3", 90, 108, 3], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["X", "E4", 85, 100, "W2", 51, 66, 3], ["X", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
+/* trim every shifted link to its evidence: first matched repeat .. last matched repeat (a repeat at i..j only
+   proves the text from i to j). Same-position links (shift 0) keep their span: identical values prove it directly. */
+PASS.forEach(L => {
+  const [k, a, a0, a1, b, b0, b1] = L, s = b0 - a0, A = MSG[a], B = MSG[b];
+  if (s === 0 && a !== b) return;
+  let lo = Infinity, hi = -Infinity;
+  for (let j = a0; j <= a1 && j + s <= b1; j++) for (let i = a0; i < j; i++)
+    if (A[i] === A[j] && B[i + s] === B[j + s]) { lo = Math.min(lo, i); hi = Math.max(hi, j); }
+  if (lo <= hi) { L[2] = lo; L[3] = hi; L[5] = lo + s; L[6] = hi + s; }
+});
 const PASSAT = {}; NAMES.forEach(n => PASSAT[n] = {});
 PASS.forEach(([k, a, a0, a1, b, b0, b1, n]) => { for (let i = a0; i <= a1; i++) PASSAT[a][i] = PASSAT[a][i] && PASSAT[a][i] !== 'weak' ? PASSAT[a][i] : k; for (let i = b0; i <= b1; i++) PASSAT[b][i] = PASSAT[b][i] && PASSAT[b][i] !== 'weak' ? PASSAT[b][i] : k; });
 /* plaintext-position twins and repeat groups from the passage links */
