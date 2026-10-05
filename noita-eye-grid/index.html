@@ -27,6 +27,14 @@ body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px
 .wrap{padding-inline:16px;padding-block:18px 28px;display:grid;gap:14px;max-width:100%}
 h1{font-size:18px;font-weight:600;margin:0;letter-spacing:.01em}
 .sub{color:var(--muted);font-size:13px;margin:2px 0 0}
+.pmap{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 12px}
+.pmap h2{font-size:13px;margin:0 0 4px}
+.pmap svg{display:block;width:100%;max-width:860px;height:auto}
+.pmap svg text{font-family:var(--sans);font-size:13px;fill:var(--fg)}
+.pmap svg .mono{font-family:var(--mono);font-weight:600}
+.pmap svg .muted{fill:var(--muted);font-size:12px}
+.pmap svg .box{fill:var(--panel);stroke:var(--rule);stroke-width:1.5}
+.pmap svg .hub{stroke:var(--fg);stroke-width:2.2}
 details.about{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:13px;line-height:1.5}
 details.about summary{cursor:pointer;font-weight:600}
 details.about h2{font-size:13px;margin:10px 0 2px}
@@ -126,6 +134,25 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
       <li>This says the plaintext is the same. It says nothing about what that plaintext is.</li>
     </ul>
   </details>
+
+  <section class="pmap" aria-label="Passage map">
+    <h2>Passage map: which messages share which plaintext passage</h2>
+    <svg viewBox="0 0 860 210" role="img" aria-label="Passage map: family 1 E1 W1 E2 share passage R twice each; family 2 W2 E3 W3 share passage Q; family 3 E4 W4 E5 share passage P. E3 also holds P and R; W2 also holds the end of P.">
+<defs><marker id="aR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--pR1)"/></marker><marker id="aP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--pP2)"/></marker></defs>
+<text x="8" y="32">family 1</text><rect class="box" x="100" y="14" width="52" height="26" rx="5"/><text class="mono" x="126" y="32" text-anchor="middle">E1</text><rect class="box" x="165" y="14" width="52" height="26" rx="5"/><text class="mono" x="191" y="32" text-anchor="middle">W1</text><rect class="box" x="230" y="14" width="52" height="26" rx="5"/><text class="mono" x="256" y="32" text-anchor="middle">E2</text><rect x="100" y="45" width="182" height="3" rx="1.5" style="fill:var(--pR1)"/><line x1="282" y1="27" x2="322" y2="27" style="stroke:var(--pR1)" stroke-width="2.5"/><rect x="322" y="14" width="110" height="26" rx="13" style="fill:var(--pR1)"/><text x="377" y="32" text-anchor="middle" style="fill:#fff;font-weight:600">R (twice each)</text>
+<text x="8" y="110">family 2</text><rect class="box" x="100" y="92" width="52" height="26" rx="5"/><text class="mono" x="126" y="110" text-anchor="middle">W2</text><rect class="box hub" x="165" y="92" width="52" height="26" rx="5"/><text class="mono" x="191" y="110" text-anchor="middle">E3</text><rect class="box" x="230" y="92" width="52" height="26" rx="5"/><text class="mono" x="256" y="110" text-anchor="middle">W3</text><rect x="100" y="123" width="182" height="3" rx="1.5" style="fill:var(--pQ)"/><line x1="282" y1="105" x2="322" y2="105" style="stroke:var(--pQ)" stroke-width="2.5"/><rect x="322" y="92" width="110" height="26" rx="13" style="fill:var(--pQ)"/><text x="377" y="110" text-anchor="middle" style="fill:#fff;font-weight:600">Q</text>
+<text x="8" y="188">family 3</text><rect class="box" x="100" y="170" width="52" height="26" rx="5"/><text class="mono" x="126" y="188" text-anchor="middle">E4</text><rect class="box" x="165" y="170" width="52" height="26" rx="5"/><text class="mono" x="191" y="188" text-anchor="middle">W4</text><rect class="box" x="230" y="170" width="52" height="26" rx="5"/><text class="mono" x="256" y="188" text-anchor="middle">E5</text><rect x="100" y="201" width="182" height="3" rx="1.5" style="fill:var(--pP1)"/><line x1="282" y1="183" x2="322" y2="183" style="stroke:var(--pP1)" stroke-width="2.5"/><rect x="322" y="170" width="110" height="26" rx="13" style="fill:var(--pP1)"/><text x="377" y="188" text-anchor="middle" style="fill:#fff;font-weight:600">P</text>
+<path d="M377,40 C377,72 191,58 191,88" fill="none" style="stroke:var(--pR1)" stroke-width="2.5" marker-end="url(#aR)"/>
+<path d="M362,170 C362,140 191,150 191,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" marker-end="url(#aP)"/>
+<path d="M340,170 C340,146 126,156 126,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#aP)"/>
+<text x="470" y="32">E3 holds Q + P + R (the only bridge between families 1 and 3)</text>
+<text x="470" y="58">W2 holds Q + the end of P (dashed); green = P copies outside family 3, as in the grid</text>
+<text x="470" y="84">W3 holds only Q</text>
+<text class="muted" x="470" y="116">no direct link family 1 ↔ family 3; message tails link nowhere</text>
+<text class="muted" x="470" y="140">copies sit at shifted positions; same repeat spacing, different values</text>
+<text class="muted" x="470" y="164">R / P / Q are neutral names, the plaintext is unknown</text>
+</svg>
+  </section>
 
   <div class="controls">
     <div class="group" id="orders"><span>Row order</span></div>
