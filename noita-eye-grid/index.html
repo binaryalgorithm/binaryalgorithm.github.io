@@ -6,23 +6,23 @@
 :root{
   --bg:#f3f4f1; --panel:#ffffff; --fg:#1d2321; --muted:#6c7671; --rule:#d9ddd8;
   --agree-1:#d7ece4; --agree-2:#a9d8c6; --agree-3:#6cbfa2; --agree-ink:#0f3b2e;
-  --slot:#ffd98a; --slot-ink:#5a3b00; --slot-edge:#c98a00;
+  --slot:#c9cfd6; --slot-ink:#20262c; --slot-edge:#4a525b;
   --label:#e3dcf5; --label-ink:#3b2a6e;
-  --hot:#d6246e; --hot-bg:#ffe0ec; --pin:#ffffff; --pin-bg:#2b59c3; --pR1:#d9480f; --pP0:#0b7285; --pP1:#7048e8; --pP2:#2f9e44; --pQ:#c2255c; --pAL:#e8a33d;
+  --hot:#d6246e; --hot-bg:#ffe0ec; --pin:#ffffff; --pin-bg:#2b59c3; --pR1:#d9480f; --pP0:#0b7285; --pP1:#7048e8; --pP2:#2f9e44; --pQ:#c2255c; --pAL:#e8a33d; --pAXL:#f6b48a;
   --mono:"JetBrains Mono",ui-monospace,Consolas,monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
   --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
-  --slot:#5a4410; --slot-ink:#ffe7b0; --slot-edge:#d9a21f;
+  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd;
   --label:#30264f; --label-ink:#e2d8ff;
-  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; color-scheme:dark}}
+  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; --pAXL:#9c5a35; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
   --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
-  --slot:#5a4410; --slot-ink:#ffe7b0; --slot-edge:#d9a21f;
+  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd;
   --label:#30264f; --label-ink:#e2d8ff;
-  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; color-scheme:dark}
+  --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; --pAXL:#9c5a35; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px}
 .wrap{padding-inline:16px;padding-block:18px 28px;display:grid;gap:14px;max-width:100%}
 h1{font-size:18px;font-weight:600;margin:0;letter-spacing:.01em}
@@ -62,6 +62,7 @@ tr.drop-below>*{box-shadow:inset 0 -3px 0 var(--hot)}
 body.is-dragging,body.is-dragging *{cursor:grabbing!important}
 tr.ruler td{color:var(--muted);font-size:10px;height:18px;vertical-align:bottom;text-align:left}
 tr.sep td,tr.sep th{height:8px;background:var(--bg)}
+td.gap{background:repeating-linear-gradient(135deg,transparent 0 3px,var(--rule) 3px 4px);min-width:3ch;width:3ch}
 td.c{padding:5px 0;text-align:center;width:3ch;min-width:3ch;cursor:pointer;position:relative}
 td.c::after{content:"|";position:absolute;right:-.28ch;color:var(--rule);pointer-events:none}
 td.c:last-child::after{content:""}
@@ -71,6 +72,12 @@ td.a3{background:var(--agree-3);color:var(--agree-ink);font-weight:600}
 td.slot{background:var(--slot);color:var(--slot-ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--slot-edge)}
 td.lab{background:var(--label);color:var(--label-ink);font-weight:700}
 td.c.rp{background:hsl(var(--h) 85% 80%)!important;color:#161616!important;font-weight:700}
+td.c.rp.rplong{background:hsl(var(--h) 45% 90%)!important;font-weight:400}
+td.c.rp.rplong .rt{opacity:.5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) td.c.rp.rplong{background:hsl(var(--h) 25% 24%)!important}}
+:root[data-theme="dark"] td.c.rp.rplong{background:hsl(var(--h) 25% 24%)!important}
+td.c.vreg{background-image:repeating-linear-gradient(135deg,rgba(110,110,110,.22) 0 2px,transparent 2px 6px)}
+td.c.tdiff{box-shadow:inset 0 -3px 0 #d6336c}
 td.c.twin{outline:2px solid var(--hot);outline-offset:-2px}
 td.c.grp{outline:2px solid var(--fg);outline-offset:-2px}
 #grid.focus td.c:not(.grp):not(.twin):not(.self){opacity:.22}
@@ -83,6 +90,9 @@ td.pin.hot{outline:2px solid var(--hot);outline-offset:-2px}
 td.c.ps-R1{box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)}
 td.c.ps-F3{box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)}
 td.c.ps-X{box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)}
+td.c.ps-AXL{box-shadow:inset 0 -4px 0 var(--pAXL),inset 0 4px 0 var(--pAXL)}
+td.c.pext{background-image:radial-gradient(circle,var(--pc) 1.3px,transparent 1.8px);background-size:6px 6px;background-repeat:repeat-x;background-position:0 100%}
+td.c.pe-R1{--pc:var(--pR1)}td.c.pe-AXL{--pc:var(--pAXL)}td.c.pe-AL{--pc:var(--pAL)}td.c.pe-F3{--pc:var(--pP1)}td.c.pe-X{--pc:var(--pP2)}td.c.pe-Q{--pc:var(--pQ)}
 td.c.ps-AL{box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.18) 4px 8px)}
 td.c.ps-Q{box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)}
 td.c.ps-weak{box-shadow:inset 0 -2px 0 var(--muted)}
@@ -157,7 +167,7 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 
   <div class="controls">
     <div class="group" id="orders"><span>Row order</span></div>
-    <div class="group"><span>Custom</span><input type="text" id="custom" value="E1 W1 E2 W2 W3 E3 E4 W4 E5" aria-label="Custom row order"><button id="apply">Apply</button></div>
+    <div class="group"><span>Custom</span><input type="text" id="custom" value="E1 W1 E2 W2 W3 E3 W4 E4 E5" aria-label="Custom row order"><button id="apply">Apply</button></div>
     <div class="group"><span>Colour by</span>
       <select id="mode" aria-label="Colour mode">
         <option value="any">Same value in same column (any row)</option>
@@ -169,6 +179,16 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
     <label class="chk"><input type="checkbox" id="showLab" checked> labels (col 0)</label>
     <label class="chk"><input type="checkbox" id="showPas" checked> shared passages</label>
     <label class="chk"><input type="checkbox" id="showRep" checked> repeat pattern</label>
+    <div class="group"><span>Align</span>
+      <select id="align" aria-label="Insert gaps so passage copies line up">
+        <option value="none">None (absolute positions)</option>
+        <option value="f1">Family 1 on passage A</option>
+        <option value="f2">Family 2 on passage B (+ W2's C)</option>
+        <option value="f3">Family 3 on passage C</option>
+        <option value="allA">All copies of A (2nd copy, incl. E3)</option>
+        <option value="allC">All copies of C (incl. E3, W2)</option>
+      </select>
+    </div>
   </div>
 
   <div class="ledger"><table id="grid"></table></div>
@@ -177,13 +197,16 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
     <span class="chip"><i class="sw" style="background:var(--agree-1)"></i>shared by 2</span>
     <span class="chip"><i class="sw" style="background:var(--agree-2)"></i>3–5</span>
     <span class="chip"><i class="sw" style="background:var(--agree-3)"></i>6–9</span>
-    <span class="chip"><i class="sw" style="background:var(--slot);box-shadow:inset 0 -3px 0 var(--slot-edge)"></i>slot (differs, then the pair re-syncs)</span>
+    <span class="chip"><i class="sw" style="background:var(--slot);box-shadow:inset 0 -3px 0 var(--slot-edge)"></i>slot / number field — grey: differs, then the copy continues unchanged (identical values where decks are equal; same value mapping inside relabelled copies, e.g. W4 33–35)</span>
     <span class="chip"><i class="sw" style="background:var(--label)"></i>label</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -3px 0 #d6336c"></i>equal-length text difference: offset unchanged but the copy's value mapping changes across it (so not a slot)</span>
     <span class="chip"><i class="sw" style="background:var(--hot-bg);outline:2px solid var(--hot);outline-offset:-2px"></i>hovered value</span>
     <span class="chip"><i class="sw" style="background:var(--pin-bg)"></i>pinned cell</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>passage A (twice in each of E1/W1/E2, once in E3)</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.3) 4px 8px)"></i>lead-in to A shared only by W1's second copy and E3 (W1 59–61 = E3 90–92): E3 quotes W1's version of A</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)"></i>passage C (E4/W4/E5)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>passage A core: the part each message repeats later (twice in each of E1/W1/E2, once in E3; proven E1 40–48 = 68–76)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAXL),inset 0 4px 0 var(--pAXL)"></i>passage A long: the ~20-character stretch E1/W1/E2 share at the first instance (E1 29–49, E2 +5); only its core is repeated later (the second instance cannot include E1 31)</span>
+    <span class="chip"><i class="sw" style="background-image:radial-gradient(circle,var(--pR1) 1.3px,transparent 1.8px);background-size:6px 6px;background-repeat:repeat-x;background-position:0 100%"></i>dotted: consistent with the copy but outside the repeat evidence (likely shared, unproven; up to 8 cells)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.3) 4px 8px)"></i>stretch shared only by W1's second instance and E3 (W1 59–69 = E3 90–100): E3 quotes W1's version, not E1's or E2's</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)"></i>passage C (E4/W4/E5; E4 = E5 at the same positions 25–42, then E5/W4 run one later)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)"></i>passage C in E3/W2 (cross-family; 0 of 174k null alignments reach 3 pairs)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)"></i>passage B (W2/E3/W3; 2 pairs each, 3-way consistent)</span>
     <span class="chip"><i class="sw" style="background:hsl(200 85% 80%)"></i>repeat that recurs in every copy of a passage (same colour + letter in each copy). Hover one: its whole set lights up, the rest dims</span>
@@ -209,29 +232,49 @@ W4:[77,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,60,21,80,1,72,55,16
 E5:[33,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,33,21,59,44,18,28,76,59,34,60,63,79,27,12,54,5,49,48,54,55,52,62,72,69,10,57,22,58,48,67,53,7,34,32,30,31,19,26,8,34,46,7,30,71,55,34,75,54,9,6,60,5,23,25,45,42,80,25,12,22,76,20,51,62,21,40,9,41,10,44,73,8,33,70,73,6,31,21,72,5,40,61,51,42,66,64,74,61,25,63,42,24,41]
 };
 const NAMES = Object.keys(MSG);
-const PASS = [["R1", "E1", 29, 49, "W1", 29, 49, 0], ["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 29, 48, "E2", 34, 53, 6], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["AL", "W1", 59, 77, "E3", 90, 108, 3], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["X", "E4", 85, 100, "W2", 51, 66, 3], ["X", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
+const PASS = [["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "W1", 32, 48, "W1", 62, 78, 3], ["R1", "E2", 37, 53, "E2", 72, 88, 3], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["AXL", "E1", 29, 49, "W1", 29, 49, 0], ["AXL", "E1", 29, 48, "E2", 34, 53, 6], ["AL", "W1", 59, 77, "E3", 90, 108, 3], ["F3", "E4", 25, 42, "E5", 25, 42, 0], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "E4", 68, 100, "E5", 69, 101, 5], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["X", "E4", 85, 100, "W2", 51, 66, 3], ["X", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
 /* trim every shifted link to its evidence: first matched repeat .. last matched repeat (a repeat at i..j only
    proves the text from i to j). Same-position links (shift 0) keep their span: identical values prove it directly. */
 PASS.forEach(L => {
   const [k, a, a0, a1, b, b0, b1] = L, s = b0 - a0, A = MSG[a], B = MSG[b];
   if (s === 0 && a !== b) return;
-  let lo = Infinity, hi = -Infinity;
+  let lo = Infinity, hi = -Infinity; const solid = new Set();
   for (let j = a0; j <= a1 && j + s <= b1; j++) for (let i = a0; i < j; i++)
-    if (A[i] === A[j] && B[i + s] === B[j + s]) { lo = Math.min(lo, i); hi = Math.max(hi, j); }
+    if (A[i] === A[j] && B[i + s] === B[j + s]) { lo = Math.min(lo, i); hi = Math.max(hi, j);  }
+  L.solid = null;
   if (lo <= hi) { L[2] = lo; L[3] = hi; L[5] = lo + s; L[6] = hi + s; }
+  if (lo > hi) return;
+  const bad = (i, j) => (A[i] === A[j]) !== (B[i + s] === B[j + s]);
+  let el = lo, eh = hi;
+  while (el - 1 >= 1 && el - 1 + s >= 1 && lo - (el - 1) <= 8) { let ok = true; for (let j = el; j <= eh; j++) if (bad(el - 1, j)) { ok = false; break; } if (!ok) break; el--; }
+  while (eh + 1 < A.length && eh + 1 + s < B.length && (eh + 1) - hi <= 8) { let ok = true; for (let i = el; i <= eh; i++) if (bad(i, eh + 1)) { ok = false; break; } if (!ok) break; eh++; }
+  L.ext = [el, eh];
 });
+const PEXT = {}; NAMES.forEach(n => PEXT[n] = {});
+PASS.forEach(L => { if (!L.ext) return; const [k, a, a0, a1, b, b0] = L, s = b0 - a0, [el, eh] = L.ext;
+  for (let i = el; i <= eh; i++) { if (i >= L[2] && i <= L[3]) continue; if (!PEXT[a][i]) PEXT[a][i] = k; if (!PEXT[b][i + s]) PEXT[b][i + s] = k; } });
 const PASSAT = {}; NAMES.forEach(n => PASSAT[n] = {});
-PASS.forEach(([k, a, a0, a1, b, b0, b1, n]) => { for (let i = a0; i <= a1; i++) PASSAT[a][i] = PASSAT[a][i] && PASSAT[a][i] !== 'weak' ? PASSAT[a][i] : k; for (let i = b0; i <= b1; i++) PASSAT[b][i] = PASSAT[b][i] && PASSAT[b][i] !== 'weak' ? PASSAT[b][i] : k; });
+PASS.forEach(L => { const [k, a, a0, a1, b, b0, b1] = L, s = b0 - a0;
+  for (let i = a0; i <= a1; i++) { if (L.solid && !L.solid.has(i)) continue;
+    if (!PASSAT[a][i]) PASSAT[a][i] = k; if (!PASSAT[b][i + s]) PASSAT[b][i + s] = k; } });
 /* plaintext-position twins and repeat groups from the passage links */
 const K = (n, i) => n + ":" + i;
 function UF() { const p = new Map(); const f = x => { if (!p.has(x)) p.set(x, x); while (p.get(x) !== x) { p.set(x, p.get(p.get(x))); x = p.get(x); } return x; }; return { f, u: (a, b) => { const ra = f(a), rb = f(b); if (ra !== rb) p.set(ra, rb); } }; }
-const TW = UF(), RG = UF(), RPM = new Set();
+const TW = UF(), RG = UF(), RPM = new Set(), MINSPAN = new Map();
 PASS.forEach(([k, a, a0, a1, b, b0, b1]) => {
   const s = b0 - a0, A = MSG[a], B = MSG[b];
   for (let i = a0; i <= a1 && i + s <= b1; i++) TW.u(K(a, i), K(b, i + s));
   for (let j = a0; j <= a1 && j + s <= b1; j++) for (let i = a0; i < j; i++) {
     const ea = A[i] === A[j], eb = B[i + s] === B[j + s];
-    if (ea && eb) { const c = [K(a, i), K(a, j), K(b, i + s), K(b, j + s)]; c.forEach(x => RPM.add(x)); c.slice(1).forEach(x => RG.u(c[0], x)); }
+    if (ea && eb) { const c = [K(a, i), K(a, j), K(b, i + s), K(b, j + s)]; c.forEach(x => { RPM.add(x); MINSPAN.set(x, Math.min(MINSPAN.get(x) ?? 1e9, j - i)); }); c.slice(1).forEach(x => RG.u(c[0], x)); }
+  }
+});
+/* identical values at the same position in a same-position link share the repeat colour (e.g. E4 48 = E5 48) */
+PASS.forEach(([k, a, a0, a1, b, b0, b1]) => {
+  if (b0 !== a0 || a === b) return;
+  for (let i = a0; i <= a1; i++) if (MSG[a][i] === MSG[b][i]) {
+    const x = K(a, i), y = K(b, i);
+    if (RPM.has(x) || RPM.has(y)) { const m_ = Math.min(MINSPAN.get(x) ?? 1e9, MINSPAN.get(y) ?? 1e9); [x, y].forEach(z => { RPM.add(z); MINSPAN.set(z, m_); }); RG.u(x, y); }
   }
 });
 const TWINS = new Map();   // cell -> all cells with the same plaintext position
@@ -243,7 +286,7 @@ const RTAG = new Map(); { const roots = []; RPM.forEach(x => { const r = RG.f(x)
   roots.forEach((r, q) => RTAG.set(r, { tag: L[q % L.length], h: Math.round((q * 137.508) % 360) })); }
 const PRESETS = {
   "Message order": "E1 W1 E2 W2 E3 W3 E4 W4 E5",
-  "Families": "E1 W1 E2 W2 W3 E3 E4 W4 E5",
+  "Families": "E1 W1 E2 W2 W3 E3 W4 E4 E5",
   "E / W split": "E1 E2 E3 E4 E5 W1 W2 W3 W4"
 };
 const MAXLEN = Math.max(...NAMES.map(n => MSG[n].length));
@@ -278,9 +321,49 @@ for (let a = 0; a < NAMES.length; a++) for (let b = a + 1; b < NAMES.length; b++
   s.forEach(([x, y]) => { for (let i = x; i < y; i++) { SLOT[A].add(i); SLOT[B].add(i); } });
   slotLines.push(`<b>${A}/${B}</b> ` + s.map(([x, y]) => `pos ${x}–${y - 1} (len ${y - x})`).join(" · "));
 }
-document.getElementById("slotlist").innerHTML = "Detected slots: " + slotLines.join("   |   ");
+/* slots proven inside a RELABELLED copy: the copy's value mapping holds on both sides and breaks inside */
+const SLOTX = [["W4", 33, 33, "slot inside the W4/E5 relabelled copy: mapping holds at W4 30 and from 36, breaks here (proven)"], ["W4", 34, 35, "inferred slot cell: E5's slot here is 3 long (32-34); no evidence either way at this cell"]];
+const SLOTNOTE = {}; NAMES.forEach(n => SLOTNOTE[n] = {});
+SLOTX.forEach(([n, a, b, note]) => { for (let i = a; i <= b; i++) { SLOT[n].add(i); SLOTNOTE[n][i] = note; } });
+/* equal-length TEXT difference: offset unchanged but the relabelling changes across it (not a slot) */
+const TDIFF = [["E4", 66, 67], ["E5", 67, 68]];
+const TDNOTE = "E4/E5 stay +1 but the value mapping changes across here (E4 38->08 before, E4 62->08 after): different text of equal length, not a slot";
+const TDAT = {}; NAMES.forEach(n => TDAT[n] = {});
+TDIFF.forEach(([n, a, b]) => { for (let i = a; i <= b; i++) TDAT[n][i] = true; });
+document.getElementById("slotlist").innerHTML = "Detected slots: " + slotLines.join("   |   ") + "   |   <b>W4</b> pos 33 proven, 34–35 inferred (inside the W4/E5 relabelled copy)";
 
 let order = PRESETS["Families"].split(" ");
+/* Align presets: per row, [position, display column] anchors. Blank cells are inserted just before an anchor
+   so that the passage copies share columns (the extra characters themselves lie somewhere earlier). */
+const ALIGNS = {
+  none: {},
+  f1: { E1: [[29, 34], [68, 80]], W1: [[29, 34], [70, 80]] },
+  f2: { W2: [[18, 24], [56, 81]], W3: [[23, 24]] },
+  f3: { E4: [[35, 36], [51, 53], [68, 71]], E5: [[35, 36], [52, 53], [69, 71]] },
+  allA: { E1: [[68, 101]], W1: [[70, 101]], E2: [[80, 101]] },
+  allC: { E4: [[35, 36], [51, 53], [68, 71]], E5: [[35, 36], [52, 53], [69, 71]], E3: [[64, 76]], W2: [[56, 93]] }
+};
+/* Variable stretches: siblings differ there AND have different lengths (so the copies after them are shifted).
+   [label, [[msg, from, to], ...]]; boundaries = last proven shared position before / first proven after. */
+const VREG = [
+  ["family 1, first slot: E2 is 5 longer", [["E1", 25, 28], ["W1", 25, 28], ["E2", 25, 33]]],
+  ["family 1, middle (between A-long and the 2nd A-core)", [["E1", 56, 67], ["W1", 56, 69], ["E2", 55, 79]]],
+  ["family 2, after the shared opening (before B)", [["W2", 6, 17], ["W3", 6, 22], ["E3", 6, 23]]],
+  ["family 2, between B and C", [["W2", 32, 55], ["E3", 38, 63]]],
+  ["family 3, slot zone: W4 is 1 longer (E4 = E5 here)", [["E4", 21, 34], ["E5", 21, 34], ["W4", 21, 35]]],
+  ["family 3, 43-50: E4 is 1 shorter (no evidence of shared text inside)", [["E4", 43, 50], ["E5", 43, 51], ["W4", 44, 52]]],
+  ["family 3, before C-long: W4 is 1 longer (E4 = E5 continue +1 here)", [["E4", 63, 67], ["E5", 64, 68], ["W4", 65, 70]]]
+];
+const VAT = {}; NAMES.forEach(n => VAT[n] = {});
+VREG.forEach(([lab, rows]) => {
+  const desc = lab + " | lengths " + rows.map(([n, a, b]) => `${n} ${b - a + 1}`).join(", ");
+  rows.forEach(([n, a, b]) => { for (let i = a; i <= b; i++) VAT[n][i] = desc; });
+});
+function layout(n, a) {          // display column of every position of row n
+  const anc = new Map((ALIGNS[a] || {})[n] || []), cols = []; let col = 0;
+  MSG[n].forEach((_, i) => { if (anc.has(i) && anc.get(i) > col) col = anc.get(i); cols.push(col); col++; });
+  return cols;
+}
 const PINS = new Set();   // "E1:25"
 const grid = document.getElementById("grid");
 const opt = () => ({
@@ -288,19 +371,24 @@ const opt = () => ({
   slots: document.getElementById("showSlots").checked,
   lab: document.getElementById("showLab").checked,
   pas: document.getElementById("showPas").checked,
-  rep: document.getElementById("showRep").checked
+  rep: document.getElementById("showRep").checked,
+  align: document.getElementById("align").value
 });
 
 function render() {
   const o = opt();
+  const LAY = {}; order.forEach(n => LAY[n] = layout(n, o.align));
+  const MAXC = Math.max(...order.map(n => LAY[n][LAY[n].length - 1] + 1));
   let h = '<tr class="ruler"><th class="name"></th>';
-  for (let i = 0; i < MAXLEN; i++) h += `<td>${i % 5 === 0 ? i : ""}</td>`;
+  for (let i = 0; i < MAXC; i++) h += `<td>${i % 5 === 0 ? i : ""}</td>`;
   h += "</tr>";
   order.forEach((n, r) => {
     const m = MSG[n];
     h += `<tr data-r="${r}"><th class="name drag" title="Drag to reorder"><span class="grip" aria-hidden="true">⋮⋮</span>${n} <small>(${String(m.length).padStart(3, "0")})</small></th>`;
-    for (let i = 0; i < MAXLEN; i++) {
-      if (i >= m.length) { h += "<td></td>"; continue; }
+    let col = 0;
+    for (let i = 0; i < m.length; i++) {
+      while (col < LAY[n][i]) { h += '<td class="gap" title="inserted gap (alignment only): pads the shorter variable stretch before this point so the shared text after it lines up"></td>'; col++; }
+      col++;
       const v = m[i], cls = ["c"];
       if (o.mode === "any") {
         const k = order.filter(x => MSG[x][i] === v).length;
@@ -311,11 +399,15 @@ function render() {
       if (o.lab && i === 0) cls.push("lab");
       if (o.slots && SLOT[n].has(i)) cls.push("slot");
       if (o.pas && PASSAT[n][i]) cls.push("ps-" + PASSAT[n][i]);
+      else if (o.pas && PEXT[n][i]) cls.push("pext", "pe-" + PEXT[n][i]);
       let sty = "", tagh = "";
       if (o.rep && RPM.has(K(n, i))) { const t = RTAG.get(RG.f(K(n, i))); cls.push("rp"); sty = ` style="--h:${t.h}"`; tagh = `<span class="rt">${t.tag}</span>`; }
+      if (TDAT[n][i]) cls.push("tdiff");
       if (PINS.has(`${n}:${i}`)) cls.push("pin");
-      h += `<td class="${cls.join(" ")}"${sty} data-v="${v}" data-i="${i}" data-n="${n}">${tagh}${p2(v)}</td>`;
+      const tip = `${n} position ${i}` + (VAT[n][i] ? " — variable stretch: " + VAT[n][i] : "") + (SLOTNOTE[n][i] ? " — " + SLOTNOTE[n][i] : "") + (TDAT[n][i] ? " — " + TDNOTE : "");
+      h += `<td class="${cls.join(" ")}"${sty} data-v="${v}" data-i="${i}" data-n="${n}" data-col="${LAY[n][i]}" title="${tip}">${tagh}${p2(v)}</td>`;
     }
+    while (col < MAXC) { h += "<td></td>"; col++; }
     h += "</tr>";
   });
   grid.innerHTML = h;
@@ -329,7 +421,7 @@ function light(v, i) {
   grid.classList.remove("focus");
   if (v === null) { readout.textContent = "Hover any value."; return; }
   grid.querySelectorAll(`td[data-v="${v}"]`).forEach(t => t.classList.add("hot"));
-  if (i !== null) grid.querySelectorAll(`td[data-i="${i}"]`).forEach(t => t.classList.add("colhot"));
+  if (i !== null) grid.querySelectorAll(`td[data-col="${i}"]`).forEach(t => t.classList.add("colhot"));
   const where = NAMES.map(n => {
     const ps = MSG[n].map((x, k) => x === v ? k : -1).filter(k => k >= 0);
     return ps.length ? `${n}@${ps.join(",")}` : null;
@@ -340,7 +432,7 @@ function light(v, i) {
 }
 grid.addEventListener("mouseover", e => {
   const t = e.target.closest("td.c"); if (!t) return;
-  light(+t.dataset.v, +t.dataset.i);
+  light(+t.dataset.v, +t.dataset.col);
   const key = K(t.dataset.n, +t.dataset.i), cell = x => { const [n, i] = x.split(":"); return grid.querySelector(`td[data-n="${n}"][data-i="${i}"]`); };
   const tw = TWINS.get(TW.f(key)) || [];
   const o = opt(), g = o.rep && RPM.has(key) ? GROUPS.get(RG.f(key)) : null;
@@ -388,7 +480,7 @@ document.getElementById("apply").onclick = () => {
   if (want.length) { order = want; render(); }
 };
 document.getElementById("custom").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("apply").click(); });
-["mode", "showSlots", "showLab", "showPas", "showRep"].forEach(id => document.getElementById(id).addEventListener("change", render));
+["mode", "showSlots", "showLab", "showPas", "showRep", "align"].forEach(id => document.getElementById(id).addEventListener("change", render));
 /* drag rows by their name cell (pointer events: mouse, pen and touch) */
 let drag = null;
 grid.addEventListener("pointerdown", e => {
