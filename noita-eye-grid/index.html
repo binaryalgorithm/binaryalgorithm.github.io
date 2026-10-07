@@ -6,7 +6,7 @@
 :root{
   --bg:#f3f4f1; --panel:#ffffff; --fg:#1d2321; --muted:#6c7671; --rule:#d9ddd8;
   --agree-1:#d7ece4; --agree-2:#a9d8c6; --agree-3:#6cbfa2; --agree-ink:#0f3b2e;
-  --slot:#c9cfd6; --slot-ink:#20262c; --slot-edge:#4a525b;
+  --slot:#c9cfd6; --slot-ink:#20262c; --slot-edge:#4a525b; --slotp:#e3e7ec; --slotp-edge:#a3acb6;
   --label:#e3dcf5; --label-ink:#3b2a6e;
   --hot:#d6246e; --hot-bg:#ffe0ec; --pin:#ffffff; --pin-bg:#2b59c3; --pR1:#d9480f; --pP0:#0b7285; --pP1:#7048e8; --pP2:#2f9e44; --pQ:#c2255c; --pAL:#e8a33d; --pAXL:#f6b48a;
   --mono:"JetBrains Mono",ui-monospace,Consolas,monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
@@ -14,13 +14,13 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
   --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
-  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd;
+  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd; --slotp:#283036; --slotp-edge:#66717c;
   --label:#30264f; --label-ink:#e2d8ff;
   --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; --pAXL:#9c5a35; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#151917; --panel:#1c211f; --fg:#e4e9e6; --muted:#8d9893; --rule:#2e3532;
   --agree-1:#1d3a30; --agree-2:#22594a; --agree-3:#2f8068; --agree-ink:#e6fff6;
-  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd;
+  --slot:#3b4249; --slot-ink:#eef2f5; --slot-edge:#a9b3bd; --slotp:#283036; --slotp-edge:#66717c;
   --label:#30264f; --label-ink:#e2d8ff;
   --hot:#ff5c9b; --hot-bg:#5a1a35; --pin:#0d1530; --pin-bg:#8fb0ff; --pR1:#ff8a4c; --pP0:#3bc9db; --pP1:#b197fc; --pP2:#69db7c; --pQ:#f783ac; --pAL:#ffc266; --pAXL:#9c5a35; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px}
@@ -70,6 +70,7 @@ td.a1{background:var(--agree-1);color:var(--agree-ink)}
 td.a2{background:var(--agree-2);color:var(--agree-ink)}
 td.a3{background:var(--agree-3);color:var(--agree-ink);font-weight:600}
 td.slot{background:var(--slot);color:var(--slot-ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--slot-edge)}
+td.slotp{background:var(--slotp);box-shadow:inset 0 -2px 0 var(--slotp-edge)}
 td.lab{background:var(--label);color:var(--label-ink);font-weight:700}
 td.c.rp{background:hsl(var(--h) 85% 80%)!important;color:#161616!important;font-weight:700}
 td.c.rp.rplong{background:hsl(var(--h) 45% 90%)!important;font-weight:400}
@@ -94,6 +95,8 @@ td.c.ps-AXL{box-shadow:inset 0 -4px 0 var(--pAXL),inset 0 4px 0 var(--pAXL)}
 td.c.pext{background-image:radial-gradient(circle,var(--pc) 1.3px,transparent 1.8px);background-size:6px 6px;background-repeat:repeat-x;background-position:0 100%}
 td.c.pe-R1{--pc:var(--pR1)}td.c.pe-AXL{--pc:var(--pAXL)}td.c.pe-AL{--pc:var(--pAL)}td.c.pe-F3{--pc:var(--pP1)}td.c.pe-X{--pc:var(--pP2)}td.c.pe-Q{--pc:var(--pQ)}
 td.c.ps-AL{box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.18) 4px 8px)}
+td.c.ps-XT{background-image:linear-gradient(90deg,var(--pP2) 50%,transparent 50%),linear-gradient(90deg,var(--pP2) 50%,transparent 50%);background-size:8px 3px,8px 3px;background-repeat:repeat-x;background-position:0 0,0 100%}
+td.c.pe-XT{--pc:var(--pP2)}
 td.c.ps-Q{box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)}
 td.c.ps-weak{box-shadow:inset 0 -2px 0 var(--muted)}
 td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
@@ -131,7 +134,7 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
         </ul>
       </li>
       <li>Excluded by our own exact test: an affine "multiply-and-shift" state (the AGL(1,83) group). No consistent fit to the copy pairs.</li>
-      <li>Labels (column 0) and the yellow slots don't move the deck. Shared text locks back exactly after them every time.</li>
+      <li>Labels (column 0) and the grey slots move the deck only by their length (or not at all), never by their content. Shared text locks back exactly after them every time.</li>
     </ul>
     <h2>Why matching repeat spacing means the same plaintext</h2>
     <ul>
@@ -157,7 +160,7 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 <path d="M362,170 C362,140 191,150 191,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" marker-end="url(#aP)"/>
 <path d="M340,170 C340,146 126,156 126,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#aP)"/>
 <text x="470" y="32">E3 holds B + C + A, with W1's lead-in (only bridge fam 1 ↔ 3)</text>
-<text x="470" y="58">W2 holds B + the end of C (dashed)</text>
+<text x="470" y="58">W2 holds B + maybe the end of C (dashed, tentative)</text>
 <text x="470" y="84">W3 holds only B</text>
 <text class="muted" x="470" y="116">green = copies of C outside family 3 (as in the grid)</text>
 <text class="muted" x="470" y="140">copies sit at shifted positions: same spacing, different values</text>
@@ -197,18 +200,20 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
     <span class="chip"><i class="sw" style="background:var(--agree-1)"></i>shared by 2</span>
     <span class="chip"><i class="sw" style="background:var(--agree-2)"></i>3–5</span>
     <span class="chip"><i class="sw" style="background:var(--agree-3)"></i>6–9</span>
-    <span class="chip"><i class="sw" style="background:var(--slot);box-shadow:inset 0 -3px 0 var(--slot-edge)"></i>slot / number field — grey: differs, then the copy continues unchanged (identical values where decks are equal; same value mapping inside relabelled copies, e.g. W4 33–35)</span>
+    <span class="chip"><i class="sw" style="background:var(--slot);box-shadow:inset 0 -3px 0 var(--slot-edge)"></i>slot / number field — grey: differs, then the copy continues unchanged (identical values where decks are equal; same value mapping inside relabelled copies, e.g. W4 33)</span>
+    <span class="chip"><i class="sw" style="background:var(--slotp);box-shadow:inset 0 -2px 0 var(--slotp-edge)"></i>likely slot, unproven — light grey: siblings differ, then share one value and diverge for good, so the re-lock after it can't be checked (or inferred from a sibling's slot length)</span>
     <span class="chip"><i class="sw" style="background:var(--label)"></i>label</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -3px 0 #d6336c"></i>equal-length text difference: offset unchanged but the copy's value mapping changes across it (so not a slot)</span>
     <span class="chip"><i class="sw" style="background:var(--hot-bg);outline:2px solid var(--hot);outline-offset:-2px"></i>hovered value</span>
     <span class="chip"><i class="sw" style="background:var(--pin-bg)"></i>pinned cell</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>passage A core: the part each message repeats later (twice in each of E1/W1/E2, once in E3; proven E1 40–48 = 68–76)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>passage A core: the part each message repeats later (twice in each of E1/W1/E2, once in E3). Proven: E1 40–48 = 68–76; W1 34–59 = 64–89 and E2 39–62 = 74–97 (rank 6 each, running through the F4b/F5 cells: the second instance carries the same numbers, same digits at those cells); W1 30–51 = E2 35–56 (rank 7: W1 and E2 share digits at F4b[1], F5[0], F5[1]; E1 differs)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAXL),inset 0 4px 0 var(--pAXL)"></i>passage A long: the ~20-character stretch E1/W1/E2 share at the first instance (E1 29–49, E2 +5); only its core is repeated later (the second instance cannot include E1 31)</span>
     <span class="chip"><i class="sw" style="background-image:radial-gradient(circle,var(--pR1) 1.3px,transparent 1.8px);background-size:6px 6px;background-repeat:repeat-x;background-position:0 100%"></i>dotted: consistent with the copy but outside the repeat evidence (likely shared, unproven; up to 8 cells)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.3) 4px 8px)"></i>stretch shared only by W1's second instance and E3 (W1 59–69 = E3 90–100): E3 quotes W1's version, not E1's or E2's</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)"></i>passage C (E4/W4/E5; E4 = E5 at the same positions 25–42, then E5/W4 run one later)</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)"></i>passage C in E3/W2 (cross-family; 0 of 174k null alignments reach 3 pairs)</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)"></i>passage B (W2/E3/W3; 2 pairs each, 3-way consistent)</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)"></i>passage C in E3 (cross-family: three independent repeats at one offset; 0 of 174k null alignments reach that)</span>
+    <span class="chip"><i class="sw" style="background-image:linear-gradient(90deg,var(--pP2) 50%,transparent 50%),linear-gradient(90deg,var(--pP2) 50%,transparent 50%);background-size:8px 3px,8px 3px;background-repeat:repeat-x;background-position:0 0,0 100%"></i>TENTATIVE: W2 piece of C: one value seen 3 times (62 = 26); chance produces ~2 such in a cross-family search</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)"></i>passage B (W2/E3/W3; 2 pairs each, 3-way consistent): proven W2 18–31 · W3 23–36 · E3 24–37; consistent (lighter) W2 12–34 · W3 17–39 · E3 18–40</span>
     <span class="chip"><i class="sw" style="background:hsl(200 85% 80%)"></i>repeat that recurs in every copy of a passage (same colour + letter in each copy). Hover one: its whole set lights up, the rest dims</span>
     <span class="chip"><i class="sw" style="outline:2px solid var(--hot);outline-offset:-2px"></i>on hover: the same plaintext position in the other copies</span>
     <button id="clearPins">Clear pins</button>
@@ -232,7 +237,7 @@ W4:[77,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,60,21,80,1,72,55,16
 E5:[33,66,5,49,75,54,2,60,29,40,2,55,9,15,59,18,68,3,36,5,47,33,21,59,44,18,28,76,59,34,60,63,79,27,12,54,5,49,48,54,55,52,62,72,69,10,57,22,58,48,67,53,7,34,32,30,31,19,26,8,34,46,7,30,71,55,34,75,54,9,6,60,5,23,25,45,42,80,25,12,22,76,20,51,62,21,40,9,41,10,44,73,8,33,70,73,6,31,21,72,5,40,61,51,42,66,64,74,61,25,63,42,24,41]
 };
 const NAMES = Object.keys(MSG);
-const PASS = [["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "W1", 32, 48, "W1", 62, 78, 3], ["R1", "E2", 37, 53, "E2", 72, 88, 3], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["AXL", "E1", 29, 49, "W1", 29, 49, 0], ["AXL", "E1", 29, 48, "E2", 34, 53, 6], ["AL", "W1", 59, 77, "E3", 90, 108, 3], ["F3", "E4", 25, 42, "E5", 25, 42, 0], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "E4", 68, 100, "E5", 69, 101, 5], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["X", "E4", 85, 100, "W2", 51, 66, 3], ["X", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
+const PASS = [["R1", "E1", 32, 48, "E1", 60, 76, 3], ["R1", "W1", 30, 59, "W1", 60, 89, 6], ["R1", "E2", 37, 62, "E2", 72, 97, 6], ["R1", "E1", 32, 48, "W1", 62, 78, 3], ["R1", "E1", 32, 48, "E2", 72, 88, 3], ["R1", "E1", 32, 47, "E3", 93, 108, 2], ["AXL", "E1", 29, 49, "W1", 29, 49, 0], ["AXL", "E1", 29, 48, "E2", 34, 53, 6], ["AXL", "W1", 29, 56, "E2", 34, 61, 7], ["AL", "W1", 59, 77, "E3", 90, 108, 3], ["F3", "E4", 25, 42, "E5", 25, 42, 0], ["F3", "E4", 46, 65, "E5", 47, 66, 5], ["F3", "E4", 46, 62, "W4", 48, 64, 3], ["F3", "E4", 68, 100, "W4", 71, 103, 8], ["F3", "E4", 68, 100, "E5", 69, 101, 5], ["F3", "W4", 34, 66, "E5", 33, 65, 6], ["X", "E4", 72, 97, "E3", 63, 88, 3], ["XT", "E4", 85, 100, "W2", 51, 66, 3], ["XT", "W4", 88, 103, "W2", 51, 66, 3], ["Q", "E3", 18, 37, "W3", 17, 36, 2], ["Q", "E3", 18, 37, "W2", 12, 31, 2]];
 /* trim every shifted link to its evidence: first matched repeat .. last matched repeat (a repeat at i..j only
    proves the text from i to j). Same-position links (shift 0) keep their span: identical values prove it directly. */
 PASS.forEach(L => {
@@ -293,7 +298,8 @@ const MAXLEN = Math.max(...NAMES.map(n => MSG[n].length));
 const p2 = v => String(v).padStart(2, "0");
 
 /* Slots: for every pair, a run of differing values that starts right after a shared value
-   and is closed by a shared run of >= 2 (a lone coincidental match stays inside the slot). */
+   and is closed by a shared run of >= 2. Inside a closed slot, a lone shared value is a 1-char connector
+   (same deck in both, so same character) and splits it, e.g. E4/E5 32-34 + 54 + 36-37. */
 function pairSlots(A, B, flank = 2) {
   const n = Math.min(A.length, B.length), eq = i => A[i] === B[i], out = [];
   let i = 1;
@@ -307,7 +313,7 @@ function pairSlots(A, B, flank = 2) {
         if (k - j >= flank) { closed = true; break; }
         j = k;
       }
-      if (closed) out.push([i, j]);
+      if (closed) { let x = i; for (let y = i; y <= j; y++) if (y === j || eq(y)) { if (y > x) out.push([x, y]); x = y + 1; } }
       i = closed ? k : n;
     } else i++;
   }
@@ -322,15 +328,38 @@ for (let a = 0; a < NAMES.length; a++) for (let b = a + 1; b < NAMES.length; b++
   slotLines.push(`<b>${A}/${B}</b> ` + s.map(([x, y]) => `pos ${x}–${y - 1} (len ${y - x})`).join(" · "));
 }
 /* slots proven inside a RELABELLED copy: the copy's value mapping holds on both sides and breaks inside */
-const SLOTX = [["W4", 33, 33, "slot inside the W4/E5 relabelled copy: mapping holds at W4 30 and from 36, breaks here (proven)"], ["W4", 34, 35, "inferred slot cell: E5's slot here is 3 long (32-34); no evidence either way at this cell"]];
+const SLOTX = [["W4", 33, 33, "slot inside the W4/E5 relabelled copy: mapping holds at W4 30 and from 36, breaks here (proven)"], ];
+/* likely but UNPROVEN slots (lighter grey): differ, one shared closing value, then the siblings diverge for good */
+const SLOTP = [["E1", 50, 54, "likely slot (unproven): E1/W1 differ here, share 43 at 55, then diverge for good, so no re-lock to check"],
+  ["W1", 50, 54, "likely slot (unproven): E1/W1 differ here, share 43 at 55, then diverge for good, so no re-lock to check"],
+  ["E4", 41, 41, "likely slot (unproven): E4/E5 differ here, share 62 at 42, then the variable region starts"],
+  ["E5", 41, 41, "likely slot (unproven): E4/E5 differ here, share 62 at 42, then the variable region starts"],
+  ["W4", 34, 35, "inferred slot cell (unproven): E5's slot here is 3 long (32-34); no evidence either way at this cell"],
+  ["W1", 64, 64, "inferred copy-2 field cell: W1 reads 67 here and at 81 exactly where copy 1 reads 26 at the cells 34 and 51 (same relabelling) - the second instance of passage A carries the same number with the same digit here"],
+  ["W1", 80, 81, "inferred copy-2 field cells: W1 80/81 mirror the copy-1 cells 50/51 (46 at 71 & 80 as 44 at 41 & 50; 67 at 64 & 81 as 26 at 34 & 51)"],
+  ["W1", 84, 84, "inferred copy-2 field cell: 62 at 84 & 89 mirrors 64 at the cell 54 & 59"],
+  ["E2", 74, 74, "inferred copy-2 field cell: E2 reads 42 here and at 91 exactly where copy 1 reads 16 at the cells 39 and 56"],
+  ["E2", 90, 91, "inferred copy-2 field cells: 72 at 81 & 90 mirrors 13 at 46 & the cell 55; 42 at 74 & 91 mirrors 16 at the cells 39 & 56"]];
+/* digit-equality evidence on copy-1 cells (2026-10-07): a relabelling persists through a field, so a cell pair is
+   mapping-consistent only if the two digits are equal */
+const DIGNOTE = [["W1", 34, "cell: card 26 here and at the cell 51; W1->E2 (+5) maps 26->16 (confirmed twice) and E2 shows 16 at its cells 39 and 56 => W1 and E2 share this digit, and the second instance repeats it (67 at 64/81)"],
+  ["W1", 51, "cell: card 26 here and at the cell 34 (see 34); digit shared with E2 56 and with copy 2 (81)"],
+  ["W1", 50, "cell: W1->E2 maps 44->13 (confirmed by the refrain text at 41/46) and E2 55 = 13 => W1 and E2 share this digit; E1 differs here"],
+  ["W1", 54, "cell: 64 here and at 59 mirrored by 62 at 84/89 in copy 2 => copy 2 repeats this digit"],
+  ["E2", 39, "cell: card 16 here and at the cell 56; = W1's 26 at 34/51 under the +5 relabelling => digit shared with W1; copy 2 repeats it (42 at 74/91)"],
+  ["E2", 56, "cell: card 16 here and at the cell 39 (see 39)"],
+  ["E2", 55, "cell: 13 = sigma(44) of W1 50 => digit shared with W1 50"]];
 const SLOTNOTE = {}; NAMES.forEach(n => SLOTNOTE[n] = {});
 SLOTX.forEach(([n, a, b, note]) => { for (let i = a; i <= b; i++) { SLOT[n].add(i); SLOTNOTE[n][i] = note; } });
+const SLOTPS = {}; NAMES.forEach(n => SLOTPS[n] = new Set());
+SLOTP.forEach(([n, a, b, note]) => { for (let i = a; i <= b; i++) { if (!SLOT[n].has(i)) SLOTPS[n].add(i); if (!SLOTNOTE[n][i]) SLOTNOTE[n][i] = note; } });
+DIGNOTE.forEach(([n, i, note]) => { SLOTNOTE[n][i] = note; });
 /* equal-length TEXT difference: offset unchanged but the relabelling changes across it (not a slot) */
 const TDIFF = [["E4", 66, 67], ["E5", 67, 68]];
 const TDNOTE = "E4/E5 stay +1 but the value mapping changes across here (E4 38->08 before, E4 62->08 after): different text of equal length, not a slot";
 const TDAT = {}; NAMES.forEach(n => TDAT[n] = {});
 TDIFF.forEach(([n, a, b]) => { for (let i = a; i <= b; i++) TDAT[n][i] = true; });
-document.getElementById("slotlist").innerHTML = "Detected slots: " + slotLines.join("   |   ") + "   |   <b>W4</b> pos 33 proven, 34–35 inferred (inside the W4/E5 relabelled copy)";
+document.getElementById("slotlist").innerHTML = "Detected slots: " + slotLines.join("   |   ") + "   |   <b>W4</b> pos 33 proven (inside the W4/E5 relabelled copy)   |   likely, unproven: <b>E1/W1</b> pos 50–54 (len 5) · <b>E4/E5</b> pos 41 (len 1) · <b>W4</b> pos 34–35";
 
 let order = PRESETS["Families"].split(" ");
 /* Align presets: per row, [position, display column] anchors. Blank cells are inserted just before an anchor
@@ -398,6 +427,7 @@ function render() {
       }
       if (o.lab && i === 0) cls.push("lab");
       if (o.slots && SLOT[n].has(i)) cls.push("slot");
+      else if (o.slots && SLOTPS[n].has(i)) cls.push("slotp");
       if (o.pas && PASSAT[n][i]) cls.push("ps-" + PASSAT[n][i]);
       else if (o.pas && PEXT[n][i]) cls.push("pext", "pe-" + PEXT[n][i]);
       let sty = "", tagh = "";
