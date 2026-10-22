@@ -2,11 +2,20 @@
 
 A single-file viewer for the 9 Noita eye messages (trigram values 0–82). Open: https://binaryalgorithm.github.io/noita-eye-grid/
 
+- **"What we know"** (top of the page) lists every result with a confidence grade:
+  - certain;
+  - strong (passes a calibrated 1-in-1000 null);
+  - favoured (odds given);
+  - not visible in the ciphertext;
+  - excluded / searched with nothing found.
 - Hover a value to light up every copy of it. Click a cell to pin it. Drag the message names to reorder the rows.
-- Slots, shared openings and shifted passage copies are marked.
+- Slots, shared openings and shifted passage copies are marked. Links that failed the 1-in-1000 calibration are drawn dashed or labelled TENTATIVE.
 - Repeat pattern: a repeat inside a passage that recurs in every copy gets the same colour and letter in each copy. Hover one to see the whole set.
-- The "Working assumptions" panel explains the cipher model and why matching repeat spacing means shared plaintext.
+- The **hypothetical shape sample** under the grid shows invented words placed on the real structure (lengths, shared text, copy offsets, number fields). It is an illustration, not a decode.
 
-Community research: Noita Discord (silmä-huone), https://noita.wiki.gg/wiki/Eye_Messages
+Status (2026-10-22): unsolved; no plaintext is known.
+- Every certified search for a compact key (a nameable rule plus a natural start deck) under the "cut at the read seat" model found nothing.
+- A random rearrangement would be determined by the messages in principle, but it provably can't be found by search.
+- Open lead: diverged messages share cards at the same position more often than cut-type models allow. A shared-update model ("XGAK", see [FrobtheBuilder's field notes](https://frobthebuilder.github.io/eye-cipher-field-notes/)) reproduces this.
 
-Update 2026-10-07: passage A bands now run W1 34–59 = 64–89 and E2 39–62 = 74–97 (rank 6 each) and W1 30–51 = E2 35–56 (rank 7) — the copies run through the number fields, which under the deck model means equal digits: W1 and E2 share digits at three cells (E1 differs), and each message's second instance repeats its first instance's numbers. The affected cells carry hover notes; the inferred second-instance field cells are marked light grey. Passage B spans stated in the legend (proven W2 18–31 · W3 23–36 · E3 24–37).
+Community research: Noita Discord (silmä-huone), https://noita.wiki.gg/wiki/Eye_Messages, https://github.com/Lymm37/eye-messages/wiki

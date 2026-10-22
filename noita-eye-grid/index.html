@@ -101,19 +101,101 @@ td.c.ps-Q{box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)}
 td.c.ps-weak{box-shadow:inset 0 -2px 0 var(--muted)}
 td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:var(--muted);align-items:center}
+.shapeh{margin:14px 0 6px;font-size:12.5px;color:var(--muted);line-height:1.5}
+#shape td.c{font-family:ui-monospace,Consolas,monospace;font-size:13px;letter-spacing:0}
 .chip{display:inline-flex;align-items:center;gap:6px}
 .sw{display:inline-block;width:22px;height:14px;border-radius:3px;border:1px solid var(--rule)}
 .readout{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:9px 12px;min-height:20px;overflow-wrap:anywhere}
 .slots{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
 .slots b{color:var(--fg)}
+.know{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:6px 12px 10px}
+.know>summary{cursor:pointer;font-weight:600;font-size:14px;padding:4px 0}
+.know h3{font-size:13.5px;margin:12px 0 4px}
+.know p,.know li{font-size:13px;line-height:1.5}
+.know ul{margin:4px 0;padding-left:20px}
+.know .tw{overflow-x:auto}
+.know table{border-collapse:collapse;font-family:var(--sans);font-size:12.5px;line-height:1.45;width:100%;min-width:560px}
+.know th,.know td{border-top:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top;white-space:normal}
+.know td:first-child{white-space:nowrap;width:1%}
+.know th{color:var(--muted);font-weight:500}
+.grade{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.g-cert{background:var(--agree-2);color:var(--agree-ink)}
+.g-strong{background:var(--agree-1);color:var(--agree-ink)}
+.g-fav{background:var(--label);color:var(--label-ink)}
+.g-blind{background:var(--slotp);color:var(--fg)}
+.g-out{background:var(--hot-bg);color:var(--fg)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
 <div class="wrap">
   <header>
     <h1>Eye message grid</h1>
-    <p class="sub">All 9 messages, every value 00–82 including labels and slots. Hover a value to light up every copy of it. Click a cell to pin or unpin that one cell. Drag a message name to reorder rows.</p>
+    <p class="sub">All 9 messages, every value 00–82 including labels and slots. Hover a value to light up every copy of it. Click a cell to pin or unpin that one cell. Drag a message name to reorder rows. Updated 2026-10-22: see "What we know" below. Unsolved: nothing has been decoded.</p>
   </header>
+
+  <details class="know" open>
+    <summary>What we know (2026-10-22), with how sure we are</summary>
+    <p>Grades: <span class="grade g-cert">certain</span> exact fact or P &lt; 1e-5 · <span class="grade g-strong">strong</span> passes a calibrated 1-in-1000 null · <span class="grade g-fav">favoured</span> statistical lean, odds given · <span class="grade g-blind">not visible</span> the ciphertext cannot tell (tested on simulations) · <span class="grade g-out">excluded</span> ruled out or searched with nothing found. Every search below was first certified: keys planted in fake messages with the real layout were recovered at 964/964 letters.</p>
+
+    <h3>The data and the designer's layer</h3>
+    <div class="tw"><table>
+      <tr><th>Grade</th><th>Claim</th><th>Evidence</th></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>9 messages, 1,036 cells, values 0–82 (base-5 trigrams), hard-coded in noita.exe, identical in every build since Feb 2024</td><td>decoded byte-exact from the exe; the only digit order with no gaps</td></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>Labels (column 0) form a hand-made chain: first eye = next label's middle eye + 1, in the order E5 E1 W1 E2 W2 E3 W3 E4 W4</td><td>8 of 8 links</td></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>Partner rule: an East message's first slot cell = its West partner's label (E1→W1, E4→W4; E5→itself)</td><td>P &lt; 5e-6</td></tr>
+      <tr><td><span class="grade g-strong">strong</span></td><td>The three families are the exe's storage blocks [E1 W1 E2] [W2 E3 W3] [E4 W4 E5]; each has a close pair plus an outlier (except the middle one)</td><td>~1 in 280 by chance</td></tr>
+      <tr><td><span class="grade g-fav">favoured</span></td><td>The ABAB sums (E1 4040, E3 5656, E5 4545 = 101 × 40/56/45) are a stamp added <i>after</i> encryption, not a key or seed</td><td>each value sits at ~0.406 × the message length; E3 has no free cells except one label eye (±4), so its sum is fixed by the ciphertext</td></tr>
+    </table></div>
+
+    <h3>The text structure (key-free)</h3>
+    <div class="tw"><table>
+      <tr><th>Grade</th><th>Claim</th><th>Evidence</th></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>All 9 start from one deck: openings shared by all 9 (2 letters), B+C (5), E3+C (9), C (20), A (24)</td><td>identical values at identical positions</td></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>Slot / number cells don't change the deck by their value: siblings with different slot values lock back into identical text</td><td>re-locks after every field (chance 1e-8 to 1e-35 per zone)</td></tr>
+      <tr><td><span class="grade g-strong">strong</span></td><td>Passage A (E1/W1/E2, each repeating it later), passage C (E4/W4/E5), passage B (23 letters, W2 12–34 = E3 18–40 = W3 17–39), E3 ↔ C bridge (28 letters, ~1 in 600)</td><td>calibrated 1-in-1000 link thresholds (blind 25.3, anchored 12.3, triangle 32.2 bits)</td></tr>
+      <tr><td><span class="grade g-blind">tentative</span></td><td>E3 also quoting passage A's refrain; W2 holding the end of C</td><td>both below the 1-in-1000 bar (dashed in the map)</td></tr>
+      <tr><td><span class="grade g-fav">favoured</span></td><td>The plaintext is language-like (not random symbols or numbers)</td><td>~4:1 (refrains, template families)</td></tr>
+      <tr><td><span class="grade g-blind">not visible</span></td><td>Which language, alphabet size, or which letter sits on which seat</td><td>certified blind (≈0 bits)</td></tr>
+    </table></div>
+
+    <h3>The machine</h3>
+    <div class="tw"><table>
+      <tr><th>Grade</th><th>Claim</th><th>Evidence</th></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>The update is deterministic and ignores which card is read (only where). Excluded: keystreams, a fresh shuffle per position, history-driven reshuffles</td><td>24 copies with 0 conflicts; those models predict ~80</td></tr>
+      <tr><td><span class="grade g-cert">certain</span></td><td>82 letter cards: value 27 is never read as a letter</td><td>P ≈ 1e-5 if it were readable</td></tr>
+      <tr><td><span class="grade g-fav">favoured</span></td><td>The read card is parked where the next letter can't read it</td><td>0 of 1,027 immediate repeats; ~6:1</td></tr>
+      <tr><td><span class="grade g-fav">favoured</span></td><td>The rearrangement mixes strongly; no order survives in the deck; random-looking rather than a nameable shuffle</td><td>repeated pairs sit at the no-order floor; random-like vs family rules ~2:1</td></tr>
+      <tr><td><span class="grade g-out">excluded</span></td><td>Move the read card to the top only (~300:1); flip the cards above it (~15:1); read card not parked (~5:1); the update ignores the letter; time- or parity-dependent rules; seat depends on the previous letter (~80:1); AGL(1,83) affine state</td><td>simulation classifiers, copy structure, one clean substitution (E4@67)</td></tr>
+      <tr><td><span class="grade g-blind">not visible</span></td><td>Whether the deck is <i>cut</i> at the read seat (the model all key searches assume). A cut plus a random rearrangement looks exactly like an arbitrary per-seat rule that parks the read card. Also insertion vs overlay slots, and which mixing family</td><td>certified blind; the old "cut 0.88" was really measuring parking</td></tr>
+    </table></div>
+
+    <h3>What searching can and can't do</h3>
+    <ul>
+      <li><span class="grade g-cert">proven</span> If the rearrangement M is random, the messages still determine it in principle (checks exceed unknowns by ~2,000–3,600 bits), but no search can find it: every exact search passes through at least 2<sup>256</sup> consistent partial keys, even with the start deck known and a language model.</li>
+      <li><span class="grade g-cert">proven</span> There is no partial credit: each read depends on ~25 entries of M, so with 80% of M right only 7–8% of reads come out right (90% → 14–17%). Hill-climbing, relaxation and machine learning have no slope to follow. This matches earlier failures of SAT, CP-SAT, gradient and neural attempts.</li>
+      <li>So if the eyes can be solved from the messages alone, the key must be <b>compact</b>: a rule and a start deck the designer could describe in a line.</li>
+    </ul>
+
+    <h3>Compact keys searched, nothing found (under the cut model)</h3>
+    <ul>
+      <li><span class="grade g-out">searched</span> ~212,000 nameable rules × 1,669 start decks (natural orders, keyword, game lists, eye-digit orders, cipher-derived) and their inverse listings × 123,000 letter-seat layouts (alphabets of 2–60 symbols, ASCII and index codes) × 83 slot models.</li>
+      <li><span class="grade g-out">searched</span> 658 natural hand shuffles (deal into piles, Monge, milk, down-under, riffles, overhand) written all 10 ways; 25,000 compact families (arithmetic mod 83, count-out deals, repeated shuffles, generalised deals and riffles); shuffle-then-cut; a label that steps the deck; letter seats taken from the deck; wand mechanics; per-letter RNG shuffles; one buggy seat.</li>
+      <li><span class="grade g-out">searched</span> The developers' four save-file passphrases in noita.exe (as keyword decks, AES-derived shuffles, and opening cribs) and the Cauldron calendar (as start deck and rule).</li>
+      <li><span class="grade g-blind">partial</span> Seeded Fisher–Yates "deck shuffles" with the standard generators (Park-Miller as in the game, MSVC rand / random_shuffle, mt19937, Python, numpy): start decks for seeds ≤ 1,000,000 with the old 481-rule set; the rule itself for seeds 1–10,000 on 12 of 49 decks. Unfinished.</li>
+    </ul>
+
+    <h3>Outside the messages</h3>
+    <ul>
+      <li>Arvi Teikari (Hempuli) has written that the eyes and the Cauldron were added by "the other 2 devs" (the C++ programmers), and that he himself doesn't know how they work (Something Awful forum, Feb 2024). No developer has said publicly whether they are solvable.</li>
+      <li>The team's habits, from the game's own code: small hand-made ciphers to hide secrets (a 10-note single-cycle permutation for songs, a keyed substitution for flag names); shuffled lists called a "deck" and made with seeded Fisher–Yates; the solved Cessation cipher is a custom stateful procedure with an ASCII plaintext, keyed with the Cauldron's calendar data. No 82/83/27 arithmetic anywhere in the code.</li>
+    </ul>
+
+    <h3>Open</h3>
+    <ul>
+      <li><span class="grade g-fav">unexplained</span> Diverged messages show the same card at the same position ~35% more often than any cut-type model gives (42 vs ~30 over positions 3–139, P ≈ 0.02), plus a deficit of equal sums at the same position. A model where <i>groups of letters share one deck update</i> ("XGAK"; see <a href="https://frobthebuilder.github.io/eye-cipher-field-notes/">FrobtheBuilder's field notes</a>) reproduces this excess in simulation. It is not a cut-type machine and none of the searches above cover it.</li>
+      <li>The plaintext: no letter is known.</li>
+    </ul>
+  </details>
 
   <details class="about">
     <summary>Working assumptions, and why shifted repeat patterns mean shared plaintext</summary>
@@ -122,9 +204,9 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
       <li><b>Values.</b> Read each triangle of 3 eyes as a base-5 number. Exactly one eye numbering and reading order gives every value 0–82 with no gaps.</li>
       <li><b>One cipher and one key for all 9 messages.</b> All 9 share their opening values, and long shared stretches line up at the same positions.</li>
     </ul>
-    <h2>Best-fit cipher model: a stateful "deck" cipher (group autokey on 83 symbols)</h2>
+    <h2>Best-fit cipher model: a stateful "deck" cipher (group autokey on the 83 values)</h2>
     <ul>
-      <li>An 83-card deck. Each plaintext letter outputs one card and rearranges the deck by a rule that depends only on positions in the deck, never on which card is where. The deck state carries forward from letter to letter.</li>
+      <li>A deck of 82 cards (the values 0–82 without 27, which never appears at a letter position). Each plaintext letter outputs the card at that letter's seat and rearranges the deck by a rule that depends only on positions in the deck, never on which card is where. The deck state carries forward from letter to letter. The read card is parked where the next letter can't read it. Whether the deck is <i>cut</i> at the read seat cannot be seen in the ciphertext (see "What we know").</li>
       <li>Fits all of these:
         <ul>
           <li>flat value frequencies;</li>
@@ -156,11 +238,11 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 <text x="8" y="32">family 1</text><rect class="box" x="100" y="14" width="52" height="26" rx="5"/><text class="mono" x="126" y="32" text-anchor="middle">E1</text><rect class="box" x="165" y="14" width="52" height="26" rx="5"/><text class="mono" x="191" y="32" text-anchor="middle">W1</text><rect class="box" x="230" y="14" width="52" height="26" rx="5"/><text class="mono" x="256" y="32" text-anchor="middle">E2</text><rect x="100" y="45" width="182" height="3" rx="1.5" style="fill:var(--pR1)"/><line x1="282" y1="27" x2="322" y2="27" style="stroke:var(--pR1)" stroke-width="2.5"/><rect x="322" y="14" width="128" height="26" rx="13" style="fill:var(--pR1)"/><text x="386" y="32" text-anchor="middle" style="fill:#fff;font-weight:600">A (twice each)</text>
 <text x="8" y="110">family 2</text><rect class="box" x="100" y="92" width="52" height="26" rx="5"/><text class="mono" x="126" y="110" text-anchor="middle">W2</text><rect class="box hub" x="165" y="92" width="52" height="26" rx="5"/><text class="mono" x="191" y="110" text-anchor="middle">E3</text><rect class="box" x="230" y="92" width="52" height="26" rx="5"/><text class="mono" x="256" y="110" text-anchor="middle">W3</text><rect x="100" y="123" width="182" height="3" rx="1.5" style="fill:var(--pQ)"/><line x1="282" y1="105" x2="322" y2="105" style="stroke:var(--pQ)" stroke-width="2.5"/><rect x="322" y="92" width="128" height="26" rx="13" style="fill:var(--pQ)"/><text x="386" y="110" text-anchor="middle" style="fill:#fff;font-weight:600">B</text>
 <text x="8" y="188">family 3</text><rect class="box" x="100" y="170" width="52" height="26" rx="5"/><text class="mono" x="126" y="188" text-anchor="middle">E4</text><rect class="box" x="165" y="170" width="52" height="26" rx="5"/><text class="mono" x="191" y="188" text-anchor="middle">W4</text><rect class="box" x="230" y="170" width="52" height="26" rx="5"/><text class="mono" x="256" y="188" text-anchor="middle">E5</text><rect x="100" y="201" width="182" height="3" rx="1.5" style="fill:var(--pP1)"/><line x1="282" y1="183" x2="322" y2="183" style="stroke:var(--pP1)" stroke-width="2.5"/><rect x="322" y="170" width="128" height="26" rx="13" style="fill:var(--pP1)"/><text x="386" y="188" text-anchor="middle" style="fill:#fff;font-weight:600">C</text>
-<path d="M377,40 C377,72 191,58 191,88" fill="none" style="stroke:var(--pR1)" stroke-width="2.5" marker-end="url(#aR)"/>
+<path d="M377,40 C377,72 191,58 191,88" fill="none" style="stroke:var(--pR1)" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#aR)"/>
 <path d="M362,170 C362,140 191,150 191,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" marker-end="url(#aP)"/>
 <path d="M340,170 C340,146 126,156 126,122" fill="none" style="stroke:var(--pP2)" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#aP)"/>
-<text x="470" y="32">E3 holds B + C + A, with W1's lead-in (only bridge fam 1 ↔ 3)</text>
-<text x="470" y="58">W2 holds B + maybe the end of C (dashed, tentative)</text>
+<text x="470" y="32">E3 holds B + 28 letters of C; A's refrain in E3 is tentative (dashed)</text>
+<text x="470" y="58">W2 holds B; the end of C in W2 is chance-level (dashed)</text>
 <text x="470" y="84">W3 holds only B</text>
 <text class="muted" x="470" y="116">green = copies of C outside family 3 (as in the grid)</text>
 <text class="muted" x="470" y="140">copies sit at shifted positions: same spacing, different values</text>
@@ -196,6 +278,9 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 
   <div class="ledger"><table id="grid"></table></div>
 
+  <div class="shapeh"><b>Hypothetical shape sample</b> — invented words, real structure only: same lengths, identical text wherever the ciphertext is identical, copies at the proven offsets, certified digit relations, second instances and hub quotes. Digits ONLY where a slot is proven (C first instance; E1/W1 25-28, 33-36) plus E2 38-41, which the proven copies force to be a field; W4 25 is shown as a letter (hyp A not assumed). Register calibrated on the in-game lore; family A read as prose with numbers, family C as a measurement line with a decimal point at 35. Colours are the real grid's (computed from the ciphertext); each cell shows the sample character instead of the value (blank = space). Not a decode. Built 2026-10-08: it also follows two links later found tentative (E3 quoting A's refrain, W2 holding the end of C).</div>
+  <div class="ledger"><table id="shape"></table></div>
+
   <div class="legend">
     <span class="chip"><i class="sw" style="background:var(--agree-1)"></i>shared by 2</span>
     <span class="chip"><i class="sw" style="background:var(--agree-2)"></i>3–5</span>
@@ -209,10 +294,10 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pR1),inset 0 4px 0 var(--pR1)"></i>passage A core: the part each message repeats later (twice in each of E1/W1/E2, once in E3). Proven: E1 40–48 = 68–76; W1 34–59 = 64–89 and E2 39–62 = 74–97 (rank 6 each, running through the F4b/F5 cells: the second instance carries the same numbers, same digits at those cells); W1 30–51 = E2 35–56 (rank 7: W1 and E2 share digits at F4b[1], F5[0], F5[1]; E1 differs)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAXL),inset 0 4px 0 var(--pAXL)"></i>passage A long: the ~20-character stretch E1/W1/E2 share at the first instance (E1 29–49, E2 +5); only its core is repeated later (the second instance cannot include E1 31)</span>
     <span class="chip"><i class="sw" style="background-image:radial-gradient(circle,var(--pR1) 1.3px,transparent 1.8px);background-size:6px 6px;background-repeat:repeat-x;background-position:0 100%"></i>dotted: consistent with the copy but outside the repeat evidence (likely shared, unproven; up to 8 cells)</span>
-    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.3) 4px 8px)"></i>stretch shared only by W1's second instance and E3 (W1 59–69 = E3 90–100): E3 quotes W1's version, not E1's or E2's</span>
+    <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pAL),inset 0 4px 0 var(--pAL);background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(232,163,61,.3) 4px 8px)"></i>TENTATIVE: stretch shared only by W1's second instance and E3 (W1 59–69 = E3 90–100). It did not pass the 1-in-1000 link calibration (2026-10-19), so E3 holding passage A is not established</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP1),inset 0 4px 0 var(--pP1)"></i>passage C (E4/W4/E5; E4 = E5 at the same positions 25–42, then E5/W4 run one later)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pP2),inset 0 4px 0 var(--pP2)"></i>passage C in E3 (cross-family: three independent repeats at one offset; 0 of 174k null alignments reach that)</span>
-    <span class="chip"><i class="sw" style="background-image:linear-gradient(90deg,var(--pP2) 50%,transparent 50%),linear-gradient(90deg,var(--pP2) 50%,transparent 50%);background-size:8px 3px,8px 3px;background-repeat:repeat-x;background-position:0 0,0 100%"></i>TENTATIVE: W2 piece of C: one value seen 3 times (62 = 26); chance produces ~2 such in a cross-family search</span>
+    <span class="chip"><i class="sw" style="background-image:linear-gradient(90deg,var(--pP2) 50%,transparent 50%),linear-gradient(90deg,var(--pP2) 50%,transparent 50%);background-size:8px 3px,8px 3px;background-repeat:repeat-x;background-position:0 0,0 100%"></i>TENTATIVE: W2 piece of C: one value seen 3 times (62 = 26); chance produces ~2 such in a cross-family search (chance-level in the 2026-10-19 calibration)</span>
     <span class="chip"><i class="sw" style="box-shadow:inset 0 -4px 0 var(--pQ),inset 0 4px 0 var(--pQ)"></i>passage B (W2/E3/W3; 2 pairs each, 3-way consistent): proven W2 18–31 · W3 23–36 · E3 24–37; consistent (lighter) W2 12–34 · W3 17–39 · E3 18–40</span>
     <span class="chip"><i class="sw" style="background:hsl(200 85% 80%)"></i>repeat that recurs in every copy of a passage (same colour + letter in each copy). Hover one: its whole set lights up, the rest dims</span>
     <span class="chip"><i class="sw" style="outline:2px solid var(--hot);outline-offset:-2px"></i>on hover: the same plaintext position in the other copies</span>
@@ -342,13 +427,13 @@ const SLOTP = [["E1", 50, 54, "likely slot (unproven): E1/W1 differ here, share 
   ["E2", 90, 91, "inferred copy-2 field cells: 72 at 81 & 90 mirrors 13 at 46 & the cell 55; 42 at 74 & 91 mirrors 16 at the cells 39 & 56"]];
 /* digit-equality evidence on copy-1 cells (2026-10-07): a relabelling persists through a field, so a cell pair is
    mapping-consistent only if the two digits are equal */
-const DIGNOTE = [["W1", 34, "cell: card 26 here and at the cell 51; W1->E2 (+5) maps 26->16 (confirmed twice) and E2 shows 16 at its cells 39 and 56 => W1 and E2 share this digit, and the second instance repeats it (67 at 64/81)"],
-  ["W1", 51, "cell: card 26 here and at the cell 34 (see 34); digit shared with E2 56 and with copy 2 (81)"],
-  ["W1", 50, "cell: W1->E2 maps 44->13 (confirmed by the refrain text at 41/46) and E2 55 = 13 => W1 and E2 share this digit; E1 differs here"],
-  ["W1", 54, "cell: 64 here and at 59 mirrored by 62 at 84/89 in copy 2 => copy 2 repeats this digit"],
-  ["E2", 39, "cell: card 16 here and at the cell 56; = W1's 26 at 34/51 under the +5 relabelling => digit shared with W1; copy 2 repeats it (42 at 74/91)"],
-  ["E2", 56, "cell: card 16 here and at the cell 39 (see 39)"],
-  ["E2", 55, "cell: 13 = sigma(44) of W1 50 => digit shared with W1 50"]];
+const DIGNOTE = [["W1", 34, "cell: card 26 here and at the cell 51; W1->E2 (+5) shows the pair 26->16 at both cell pairs (39/56). LIKELY shared digit, not certain: the pair is pinned only by its own recurrence, not by text (such recurrences are truly equal ~23% of the time on planted data). Copy 2 repeats it (67 at 64/81)"],
+  ["W1", 51, "cell: card 26 here and at the cell 34 (see 34); digit LIKELY shared with E2 56 (recurrence only, not certain); copy 2 (81)"],
+  ["W1", 50, "cell: W1->E2 maps 44->13 (confirmed by the refrain text at 41/46) and E2 55 = 13 => W1 and E2 share this digit (CERTAIN: the only text-pinned digit equality); E1 differs here"],
+  ["W1", 54, "cell: 64 here and at 59 mirrored by 62 at 84/89 in copy 2 => copy 2 likely repeats this digit (the pair 64->62 sits in the middle text / tail, a genuine copy pair only if those texts repeat)"],
+  ["E2", 39, "cell: card 16 here and at the cell 56; = W1's 26 at 34/51 under the +5 relabelling => digit LIKELY shared with W1 (recurrence only, not text-pinned); copy 2 repeats it (42 at 74/91)"],
+  ["E2", 56, "cell: card 16 here and at the cell 39 (see 39); likely, not certain"],
+  ["E2", 55, "cell: 13 = sigma(44) of W1 50 => digit shared with W1 50 (CERTAIN, text-pinned)"]];
 const SLOTNOTE = {}; NAMES.forEach(n => SLOTNOTE[n] = {});
 SLOTX.forEach(([n, a, b, note]) => { for (let i = a; i <= b; i++) { SLOT[n].add(i); SLOTNOTE[n][i] = note; } });
 const SLOTPS = {}; NAMES.forEach(n => SLOTPS[n] = new Set());
@@ -395,6 +480,20 @@ function layout(n, a) {          // display column of every position of row n
 }
 const PINS = new Set();   // "E1:25"
 const grid = document.getElementById("grid");
+const shape = document.getElementById("shape");
+/* ILLUSTRATION ONLY (2026-10-08): invented plaintexts that satisfy the certain structure; see ledger "Form analysis". */
+const MOCK = {
+  E1: "1) My first eye has seen 4071 at 2619 steps below night wait four steps below stone the Work waits.",
+  W1: "2) My first eye has seen 1358 at 8140 steps below earth listen four steps below earth the Gods are here",
+  E2: "3) My first eye has seen also wait at 3147 steps below earth do not look four steps below earth do not look away again",
+  W2: "4) The Hiisi know what you carry and so do i. it is have closed. ye the ninth eye is the last one. go.",
+  E3: "5) The eye is mine know what you carry and i keep what i saw. until the eyes have closed. yen four steps below them. for i am the binder.",
+  W3: "6) The Kolmisilma know what you carry but i carry nothing. and nothing carries me. so the eyes may look as long as they like",
+  E4: "7) The eye opened at 7365 m 8 x 250.15 s 1.toveri. my Work is not gone until the eyes have closed. yet come find me now",
+  W4: "8) The eye opened at 5875k m 5 x 384.90 s 2.lumikki. my Work is not prone until the eyes have closed. yet i will be here",
+  E5: "9) The eye opened at 4812 m 3 x 719.42 s 6.lumikki. my Work is not done until the eyes have closed. i am the ninth"
+};
+const mockChar = (n, i) => { const c = (MOCK[n] || "")[i]; return c === undefined ? "" : (c === " " ? "" : c.replace("<", "&lt;").replace("&", "&amp;")); };
 const opt = () => ({
   mode: document.getElementById("mode").value,
   slots: document.getElementById("showSlots").checked,
@@ -406,6 +505,13 @@ const opt = () => ({
 
 function render() {
   const o = opt();
+  grid.innerHTML = buildRows(o, (n, i, v) => p2(v));
+  shape.innerHTML = buildRows(o, (n, i, v) => mockChar(n, i));
+  document.querySelectorAll("#orders button").forEach(b => b.setAttribute("aria-pressed", PRESETS[b.textContent] === order.join(" ")));
+  showPins();
+}
+
+function buildRows(o, textOf) {
   const LAY = {}; order.forEach(n => LAY[n] = layout(n, o.align));
   const MAXC = Math.max(...order.map(n => LAY[n][LAY[n].length - 1] + 1));
   let h = '<tr class="ruler"><th class="name"></th>';
@@ -435,14 +541,12 @@ function render() {
       if (TDAT[n][i]) cls.push("tdiff");
       if (PINS.has(`${n}:${i}`)) cls.push("pin");
       const tip = `${n} position ${i}` + (VAT[n][i] ? " — variable stretch: " + VAT[n][i] : "") + (SLOTNOTE[n][i] ? " — " + SLOTNOTE[n][i] : "") + (TDAT[n][i] ? " — " + TDNOTE : "");
-      h += `<td class="${cls.join(" ")}"${sty} data-v="${v}" data-i="${i}" data-n="${n}" data-col="${LAY[n][i]}" title="${tip}">${tagh}${p2(v)}</td>`;
+      h += `<td class="${cls.join(" ")}"${sty} data-v="${v}" data-i="${i}" data-n="${n}" data-col="${LAY[n][i]}" title="${tip}">${tagh}${textOf(n, i, v)}</td>`;
     }
     while (col < MAXC) { h += "<td></td>"; col++; }
     h += "</tr>";
   });
-  grid.innerHTML = h;
-  document.querySelectorAll("#orders button").forEach(b => b.setAttribute("aria-pressed", PRESETS[b.textContent] === order.join(" ")));
-  showPins();
+  return h;
 }
 
 const readout = document.getElementById("readout");
