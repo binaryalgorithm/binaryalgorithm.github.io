@@ -192,7 +192,8 @@ td.colhot{box-shadow:inset 0 0 0 9999px rgba(127,127,127,.12)}
 
     <h3>Open</h3>
     <ul>
-      <li><span class="grade g-fav">unexplained</span> Diverged messages show the same card at the same position ~35% more often than any cut-type model gives (42 vs ~30 over positions 3–139, P ≈ 0.02), plus a deficit of equal sums at the same position. A model where <i>groups of letters share one deck update</i> ("XGAK"; see <a href="https://frobthebuilder.github.io/eye-cipher-field-notes/">FrobtheBuilder's field notes</a>) reproduces this excess in simulation. It is not a cut-type machine and none of the searches above cover it.</li>
+      <li><span class="grade g-fav">unexplained</span> Diverged messages show the same card at the same position ~35% more often than strongly mixing models give (42 vs ~30 over positions 3–139, P ≈ 0.02–0.04), plus a deficit of equal sums at the same position that no model reproduces. Only a slow "move the read card to the top" rule gives the excess, and it fails the repeat-gap profile.</li>
+      <li><span class="grade g-blind">not visible</span> Tested 2026-10-22: shared-update machines where <i>groups of letters share one deck update</i> ("XGAK", from <a href="https://frobthebuilder.github.io/eye-cipher-field-notes/">FrobtheBuilder's field notes</a>; 2–6 random groups, or space / vowel groups, read card parked). With 5,000 simulated corpora per model, they are indistinguishable from the cut model on 100 key-free statistics (real-data odds ~1:1), and they do <b>not</b> reproduce the excess above (median 30–32). XGAK is a live alternative that none of the key searches cover.</li>
       <li>The plaintext: no letter is known.</li>
     </ul>
   </details>
